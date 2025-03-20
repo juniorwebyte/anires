@@ -115,7 +115,7 @@ const RoadmapItem = ({ phase, title, items, isActive }) => {
           <li key={index} className="flex items-start gap-2">
             <CheckCircle className={`h-5 w-5 mt-0.5 ${isActive ? "text-blue-400" : "text-gray-500"}`} />
             <span
-              className={`${item === "Concepção da ideia do Street Dog Coin" ? "text-blue-200 font-medium" : "text-gray-300"}`}
+              className={`${item === "Concepção da ideia do AniRes" ? "text-blue-200 font-medium" : "text-gray-300"}`}
             >
               {item}
             </span>
@@ -329,7 +329,7 @@ export default function Home() {
                     borderColor="border-red-400"
                   />
                   <CryptoSymbol
-                    symbol="STDOG"
+                    symbol="ANIRES"
                     delay={14}
                     distance={150}
                     duration={14}
@@ -366,7 +366,7 @@ export default function Home() {
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <StatCounter value={10000} label="Participantes" />
-              <StatCounter value={100} label="$STDOG por Airdrop" />
+              <StatCounter value={100} label="$ANIRES por Airdrop" />
               <StatCounter value={5} label="Tarefas Simples" />
               <StatCounter value={4} label="Parceiros Cripto" />
             </div>
@@ -401,10 +401,12 @@ export default function Home() {
               viewport={{ once: true }}
               className="flex-1"
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">Conheça o Street Dog</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">Conheça o AniRes</h2>
               <p className="text-gray-300 text-lg mb-6">
-                Nosso mascote representa a união entre o mundo cripto e a causa dos cães de rua. Com estilo urbano e
-                coração solidário, ele simboliza nossa missão de usar a tecnologia blockchain para fazer a diferença.
+              A Nova Era do Resgate Animal. Os sistemas falharam. As promessas foram quebradas. 
+              Mas não esperamos mais! Anires nasceu para garantir que todo animal abandonado tenha abrigo, comida e dignidade, sem depender de políticos ou instituições falsas. 
+              Nossa estrutura incluirá um abrigo para resgatar e cuidar de animais, uma fábrica de alimentos para garantir nutrição contínua e um centro de adoção onde cada animal poderá encontrar um lar. 
+              Com o ANIRES CASH, você se torna parte dessa transformação real e transparente sem intermediários!
               </p>
               <div className="space-y-4">
                 <motion.div
@@ -419,7 +421,7 @@ export default function Home() {
                   className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4"
                 >
                   <h4 className="font-semibold text-blue-300 mb-2">Airdrop em Andamento</h4>
-                  <p className="text-gray-400">Participe agora e receba 100 $STDOG tokens gratuitamente</p>
+                  <p className="text-gray-400">Participe agora e receba 100 $ANIRES tokens gratuitamente</p>
                 </motion.div>
               </div>
             </motion.div>
@@ -519,8 +521,8 @@ export default function Home() {
               className="flex-1"
             >
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-banner-JgZA12ksFSsQCl9cfg4bUBPkxPVfoE.jpeg"
-                alt="Street Dog Banner"
+                src="/banner.jpg"
+                alt="AniRes Banner"
                 width={600}
                 height={600}
                 className="rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-500"
@@ -535,7 +537,7 @@ export default function Home() {
               className="flex-1"
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">
-                Junte-se à Revolução Street Dog Coin
+                Junte-se à Revolução AniRes
               </h2>
               <div className="space-y-4">
                 <motion.div whileHover={{ x: 5 }} className="flex items-start gap-4">
@@ -578,7 +580,7 @@ export default function Home() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">Tokenomics</h2>
             <p className="text-gray-300 max-w-2xl mx-auto mb-4">
-              Distribuição transparente e sustentável do Street Dog Coin
+              Distribuição transparente e sustentável do AniRes
             </p>
             <Link href="/tokenomics">
               <Button
@@ -657,7 +659,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="text-lg font-medium text-blue-300">Fornecimento Total</h4>
-                    <p className="text-gray-400">5.000.000.000 $STDOG</p>
+                    <p className="text-gray-400">5.000.000.000 $ANIRES</p>
                   </div>
                 </div>
 
@@ -668,7 +670,7 @@ export default function Home() {
                   <div>
                     <h4 className="text-lg font-medium text-blue-300">Recompensas</h4>
                     <p className="text-gray-400">
-                      Ao adquirir STDOG na página oficial, você recebe bônus exclusivos de até 20%! Quanto antes
+                      Ao adquirir ANIRES na página oficial, você recebe bônus exclusivos de até 20%! Quanto antes
                       participar, maior a sua recompensa.
                     </p>
                   </div>
@@ -691,7 +693,7 @@ export default function Home() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">Roadmap</h2>
             <p className="text-gray-300 max-w-2xl mx-auto mb-6">
-              Nossa jornada para criar impacto e valor através do Street Dog Coin
+              Nossa jornada para criar impacto e valor através do AniRes
             </p>
             <Link href="/roadmap">
               <Button
@@ -714,7 +716,7 @@ export default function Home() {
                 phase="Fase 0"
                 title="Concepção (2021-2022)"
                 items={[
-                  "Concepção da ideia do Street Dog Coin",
+                  "Concepção da ideia do AniRes",
                   "Planejamento estratégico inicial",
                   "Primeiro post oficial no Facebook",
                   "Estabelecimento da presença inicial nas redes sociais",
@@ -753,7 +755,7 @@ export default function Home() {
                 phase="Fase 2"
                 title="Lançamento (Q1 2025)"
                 items={[
-                  "Lançamento oficial do token STDOG",
+                  "Lançamento oficial do token ANIRES",
                   "Início da distribuição do Airdrop",
                   "Listagem em exchanges descentralizadas",
                   "Listagem em exchanges centralizadas",
@@ -777,25 +779,25 @@ export default function Home() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">Perguntas Frequentes</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">Tudo o que você precisa saber sobre o Street Dog Coin</p>
+            <p className="text-gray-300 max-w-2xl mx-auto">Tudo o que você precisa saber sobre o AniRes</p>
           </motion.div>
 
           <div className="max-w-3xl mx-auto">
             <FAQItem
-              question="O que é o Street Dog Coin?"
-              answer="O STDOG é um token criado para unir tecnologia e impacto social, ajudando cães de rua por meio da construção de um abrigo e uma fábrica de ração. No futuro, ele impulsionará um ecossistema com marketplace pet, NFTs solidários e um sistema de doações transparentes."
+              question="O que é o AniRes?"
+              answer="O ANIRES é um token criado para unir tecnologia e impacto social, ajudando cães de rua por meio da construção de um abrigo e uma fábrica de ração. No futuro, ele impulsionará um ecossistema com marketplace pet, NFTs solidários e um sistema de doações transparentes."
             />
             <FAQItem
               question="Como funciona o airdrop?"
-              answer="Para participar do airdrop, você precisa completar algumas tarefas simples como seguir nossas redes sociais, entrar no grupo do Telegram e compartilhar o projeto. Após a verificação, você receberá 100 $STDOG tokens gratuitamente."
+              answer="Para participar do airdrop, você precisa completar algumas tarefas simples como seguir nossas redes sociais, entrar no grupo do Telegram e compartilhar o projeto. Após a verificação, você receberá 100 $ANIRES tokens gratuitamente."
             />
             <FAQItem
-              question="Como funciona a listagem do STDOG e por que é uma grande oportunidade?"
-              answer="A listagem do STDOG foi estrategicamente planejada para garantir valorização e crescimento sustentável. Comprando diretamente pelo site oficial, os investidores aproveitam benefícios exclusivos, incluindo recompensas progressivas de até 20%. Além disso, com a futura integração em exchanges e adoção no marketplace pet, o STDOG tem tudo para se tornar um sucesso absoluto no mercado cripto!"
+              question="Como funciona a listagem do ANIRES e por que é uma grande oportunidade?"
+              answer="A listagem do ANIRES foi estrategicamente planejada para garantir valorização e crescimento sustentável. Comprando diretamente pelo site oficial, os investidores aproveitam benefícios exclusivos, incluindo recompensas progressivas de até 20%. Além disso, com a futura integração em exchanges e adoção no marketplace pet, o ANIRES tem tudo para se tornar um sucesso absoluto no mercado cripto!"
             />
             <FAQItem
               question="Como o projeto ajuda os cães de rua?"
-              answer="O Street Dog Coin foi criado para gerar impacto real na vida dos animais. Parte dos recursos do projeto será destinada à construção de uma fábrica de ração e um abrigo para cães resgatados. Além disso, o ecossistema do STDOG inclui um sistema de doações transparentes, NFTs solidários e parcerias com ONGs para ampliar o suporte aos animais que mais precisam."
+              answer="O AniRes foi criado para gerar impacto real na vida dos animais. Parte dos recursos do projeto será destinada à construção de uma fábrica de ração e um abrigo para cães resgatados. Além disso, o ecossistema do ANIRES inclui um sistema de doações transparentes, NFTs solidários e parcerias com ONGs para ampliar o suporte aos animais que mais precisam."
             />
             <FAQItem
               question="Posso participar do projeto de outras formas?"
@@ -821,7 +823,7 @@ export default function Home() {
                 Pronto para fazer parte desta revolução?
               </h2>
               <p className="text-gray-300 text-lg mb-8">
-                Não perca a oportunidade de participar do airdrop do Street Dog Coin e fazer parte de uma comunidade que
+                Não perca a oportunidade de participar do airdrop do AniRes e fazer parte de uma comunidade que
                 está mudando o mundo dos cães de rua.
               </p>
               <Link href="/claim">
