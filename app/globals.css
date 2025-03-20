@@ -1,0 +1,443 @@
+/* Add astral theme specific styles to globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-transparent text-foreground;
+    background-color: transparent !important;
+  }
+
+  main {
+    background-color: transparent !important;
+  }
+}
+
+/* Garantir que os cards e outros elementos tenham fundo semi-transparente */
+.bg-black {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Animações personalizadas */
+/* Otimizar as animações CSS para melhorar a performance */
+
+/* Simplificar a animação float para usar transform em vez de translateY */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Otimizar a animação glow para usar menos recursos */
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+  }
+}
+
+/* Adicionar will-change para melhorar a performance das animações */
+.animate-float {
+  animation: float 6s infinite ease-in-out;
+  will-change: transform;
+}
+
+.animate-glow {
+  animation: glow 4s infinite ease-in-out;
+  will-change: filter;
+}
+
+/* Otimizar a animação de shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+/* Adicionar suporte para reduzir animações se o usuário preferir */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-glow,
+  .animate-pulse,
+  .animate-shimmer,
+  .shooting-star {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Adicionar classe para dispositivos de baixa performance */
+.low-perf-mode .nebula,
+.low-perf-mode .planet,
+.low-perf-mode .shooting-star,
+.low-perf-mode .constellation,
+.low-perf-mode .zodiac-symbol {
+  display: none !important;
+}
+
+.low-perf-mode .star {
+  animation: none !important;
+}
+
+/* Estilos adicionais para o tema astral */
+.stars-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(30px);
+}
+
+.planet {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.shooting-star {
+  position: absolute;
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  transform-origin: left;
+}
+
+/* Novos estilos para o tema astral */
+.constellation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.constellation-line {
+  position: absolute;
+  background-color: rgba(147, 197, 253, 0.3);
+  height: 1px;
+  transform-origin: left center;
+}
+
+.constellation-star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.zodiac-symbol {
+  position: absolute;
+  font-size: 1.5rem;
+  color: rgba(168, 85, 247, 0.4);
+}
+
+.astral-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Adicionar animações de carregamento e transição */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Melhorar a acessibilidade para foco */
+:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.6);
+  outline-offset: 2px;
+}
+
+/* Melhorar a experiência em dispositivos móveis */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Melhorar a experiência de carregamento de imagens */
+.image-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-loading::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(30, 30, 60, 0.1), rgba(60, 60, 120, 0.2), rgba(30, 30, 60, 0.1));
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Animação de órbita para símbolos de criptomoedas */
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(150px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(150px) rotate(-360deg);
+  }
+}
+
+/* Animação de rotação para os símbolos de criptomoedas */
+.crypto-symbol > div {
+  animation: pulse 3s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.crypto-symbol > div:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+/* Animação de pulso para elementos de destaque */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s infinite ease-in-out;
+}
+
+/* Animação de gradiente para fundos */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 15s ease infinite;
+}
+
+/* Adicionar efeito de brilho para os símbolos */
+@keyframes glow-symbol {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+  }
+}
+
+/* Animação de rotação para elementos astrais */
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-slow {
+  animation: rotate-slow 120s linear infinite;
+}
+
+.rotate-slow-reverse {
+  animation: rotate-slow 120s linear infinite reverse;
+}
+
+/* Efeito de brilho para elementos astrais */
+@keyframes astral-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.astral-glow {
+  animation: astral-glow 4s ease-in-out infinite;
+}
+
+/* Estilo para texto com efeito de brilho astral */
+.astral-text {
+  color: #a78bfa;
+  text-shadow: 0 0 5px #a78bfa, 0 0 10px #a78bfa;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Adicionar esta classe ao seu arquivo CSS global */
+.rainbow-text {
+  background-image: linear-gradient(to right, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #8000ff, #ff0080);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Adicionar animação de flutuação para elementos */
+/* Adicionar efeito de brilho para elementos */
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px -10px rgba(138, 43, 226, 0.8);
+  }
+  to {
+    box-shadow: 0 0 20px 10px rgba(138, 43, 226, 0.8);
+  }
+}
+
+/* Adicionar animação de pulso lenta */
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+.astral-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600;
+}
+
+/* Adicionar estilos para o modo de performance */
+.performance-mode .stars-container,
+.performance-mode .galaxy-animation,
+.performance-mode .animate-float,
+.performance-mode .animate-pulse,
+.performance-mode .animate-glow {
+  animation: none !important;
+}
+
+.performance-mode .crypto-symbol {
+  display: none !important;
+}
+

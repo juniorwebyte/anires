@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Documentação de Instalação - Street Dog Coin</title>
+   <style>
+       body {
+           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           line-height: 1.6;
+           color: #333;
+           max-width: 1200px;
+           margin: 0 auto;
+           padding: 20px;
+       }
+       h1, h2, h3, h4 {
+           color: #4338ca;
+       }
+       h1 {
+           border-bottom: 2px solid #4338ca;
+           padding-bottom: 10px;
+       }
+       h2 {
+           margin-top: 30px;
+           border-bottom: 1px solid #e5e7eb;
+           padding-bottom: 5px;
+       }
+       code {
+           background-color: #f1f5f9;
+           padding: 2px 5px;
+           border-radius: 4px;
+           font-family: 'Courier New', Courier, monospace;
+       }
+       pre {
+           background-color: #1e293b;
+           color: #e2e8f0;
+           padding: 15px;
+           border-radius: 8px;
+           overflow-x: auto;
+           font-family: 'Courier New', Courier, monospace;
+       }
+       .note {
+           background-color: #dbeafe;
+           border-left: 4px solid #3b82f6;
+           padding: 15px;
+           margin: 20px 0;
+           border-radius: 0 8px 8px 0;
+       }
+       .warning {
+           background-color: #fee2e2;
+           border-left: 4px solid #ef4444;
+           padding: 15px;
+           margin: 20px 0;
+           border-radius: 0 8px 8px 0;
+       }
+       .success {
+           background-color: #dcfce7;
+           border-left: 4px solid #22c55e;
+           padding: 15px;
+           margin: 20px 0;
+           border-radius: 0 8px 8px 0;
+       }
+       img {
+           max-width: 100%;
+           border: 1px solid #e5e7eb;
+           border-radius: 8px;
+           margin: 15px 0;
+       }
+       table {
+           width: 100%;
+           border-collapse: collapse;
+           margin: 20px 0;
+       }
+       th, td {
+           border: 1px solid #e5e7eb;
+           padding: 10px;
+           text-align: left;
+       }
+       th {
+           background-color: #f8fafc;
+       }
+       .step {
+           margin-bottom: 30px;
+           padding-left: 20px;
+           border-left: 2px solid #4338ca;
+       }
+       .step-number {
+           display: inline-block;
+           width: 30px;
+           height: 30px;
+           background-color: #4338ca;
+           color: white;
+           text-align: center;
+           line-height: 30px;
+           border-radius: 50%;
+           margin-right: 10px;
+       }
+       .tab {
+           overflow: hidden;
+           border: 1px solid #e5e7eb;
+           background-color: #f8fafc;
+           border-radius: 8px 8px 0 0;
+       }
+       .tab button {
+           background-color: inherit;
+           float: left;
+           border: none;
+           outline: none;
+           cursor: pointer;
+           padding: 14px 16px;
+           transition: 0.3s;
+           font-size: 16px;
+       }
+       .tab button:hover {
+           background-color: #ddd;
+       }
+       .tab button.active {
+           background-color: #4338ca;
+           color: white;
+       }
+       .tabcontent {
+           display: none;
+           padding: 20px;
+           border: 1px solid #e5e7eb;
+           border-top: none;
+           border-radius: 0 0 8px 8px;
+       }
+   </style>
+</head>
+<body>
+   <h1>Documentação de Instalação - Street Dog Coin</h1>
+   
+   <p>Este documento fornece instruções detalhadas para instalar e configurar a aplicação Street Dog Coin em diferentes ambientes.</p>
+
+   <h2>Índice</h2>
+   <ul>
+       <li><a href="#requisitos">Requisitos do Sistema</a></li>
+       <li><a href="#ambiente">Configuração do Ambiente</a></li>
+       <li><a href="#instalacao">Passos para Instalação</a></li>
+       <li><a href="#vercel">Implantação na Vercel</a></li>
+       <li><a href="#variaveis">Variáveis de Ambiente</a></li>
+       <li><a href="#problemas">Solução de Problemas Comuns</a></li>
+   </ul>
+
+   <h2 id="requisitos">Requisitos do Sistema</h2>
+   
+   <p>Antes de começar a instalação, certifique-se de que seu ambiente atende aos seguintes requisitos:</p>
+   
+   <table>
+       <tr>
+           <th>Componente</th>
+           <th>Versão Mínima</th>
+           <th>Recomendada</th>
+       </tr>
+       <tr>
+           <td>Node.js</td>
+           <td>16.x</td>
+           <td>18.x ou superior</td>
+       </tr>
+       <tr>
+           <td>npm</td>
+           <td>8.x</td>
+           <td>9.x ou superior</td>
+       </tr>
+       <tr>
+           <td>Git</td>
+           <td>2.x</td>
+           <td>Última versão</td>
+       </tr>
+   </table>
+
+   <div class="note">
+       <strong>Nota:</strong> Esta aplicação é construída com Next.js, que pode ser implantada como uma aplicação Node.js ou exportada como arquivos estáticos.
+   </div>
+
+   <h2 id="ambiente">Configuração do Ambiente</h2>
+
+   <h3>Instalação do Node.js e npm</h3>
+   
+   <div class="step">
+       <p><span class="step-number">1</span> <strong>Instale o Node.js e npm</strong></p>
+       <p>Baixe e instale o Node.js a partir do <a href="https://nodejs.org/" target="_blank">site oficial</a>. Isso também instalará o npm.</p>
+       <p>Verifique a instalação com:</p>
+       <pre>node --version
+npm --version</pre>
+   </div>
+
+   <h3>Instalação do Git</h3>
+   
+   <div class="step">
+       <p><span class="step-number">2</span> <strong>Instale o Git</strong></p>
+       <p>Baixe e instale o Git a partir do <a href="https://git-scm.com/" target="_blank">site oficial</a>.</p>
+       <p>Verifique a instalação com:</p>
+       <pre>git --version</pre>
+   </div>
+
+   <h2 id="instalacao">Passos para Instalação</h2>
+
+   <h3>Clonando o Repositório</h3>
+   
+   <div class="step">
+       <p><span class="step-number">1</span> <strong>Clone o repositório</strong></p>
+       <pre>git clone [URL_DO_REPOSITÓRIO]
+cd street-dog-coin</pre>
+   </div>
+
+   <h3>Instalando Dependências</h3>
+   
+   <div class="step">
+       <p><span class="step-number">2</span> <strong>Instale as dependências</strong></p>
+       <pre>npm install</pre>
+   </div>
+
+   <h3>Configuração de Variáveis de Ambiente</h3>
+   
+   <div class="step">
+       <p><span class="step-number">3</span> <strong>Configure as variáveis de ambiente</strong></p>
+       <p>Crie um arquivo <code>.env.local</code> na raiz do projeto com as seguintes variáveis:</p>
+       <pre># Credenciais de administrador
+ADMIN_USERNAME=seu_usuario_admin
+ADMIN_PASSWORD=sua_senha_admin
+NEXT_PUBLIC_ADMIN_USERNAME=seu_usuario_admin_publico
+NEXT_PUBLIC_ADMIN_PASSWORD=sua_senha_admin_publica
+
+# Configurações da aplicação
+NEXT_PUBLIC_SITE_URL=https://seu-dominio.com</pre>
+   </div>
+
+   <h3>Executando em Desenvolvimento</h3>
+   
+   <div class="step">
+       <p><span class="step-number">4</span> <strong>Inicie o servidor de desenvolvimento</strong></p>
+       <pre>npm run dev</pre>
+       <p>A aplicação estará disponível em <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+   </div>
+
+   <h3>Construção para Produção</h3>
+   
+   <div class="step">
+       <p><span class="step-number">5</span> <strong>Construa a aplicação para produção</strong></p>
+       <pre>npm run build</pre>
+   </div>
+
+   <h3>Executando em Produção Localmente</h3>
+   
+   <div class="step">
+       <p><span class="step-number">6</span> <strong>Inicie o servidor de produção</strong></p>
+       <pre>npm start</pre>
+       <p>A aplicação estará disponível em <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+   </div>
+
+   <h2 id="vercel">Implantação na Vercel</h2>
+
+   <p>A Vercel é a plataforma recomendada para aplicações Next.js. Siga estes passos para implantar na Vercel:</p>
+
+   <div class="step">
+       <p><span class="step-number">1</span> <strong>Crie uma conta na Vercel</strong></p>
+       <p>Acesse <a href="https://vercel.com/signup" target="_blank">https://vercel.com/signup</a> e crie uma conta se ainda não tiver uma.</p>
+   </div>
+
+   <div class="step">
+       <p><span class="step-number">2</span> <strong>Instale a CLI da Vercel (opcional)</strong></p>
+       <pre>npm install -g vercel</pre>
+   </div>
+
+   <div class="step">
+       <p><span class="step-number">3</span> <strong>Implante usando a CLI (opcional)</strong></p>
+       <pre>vercel</pre>
+       <p>Siga as instruções para fazer login e configurar o projeto.</p>
+   </div>
+
+   <div class="step">
+       <p><span class="step-number">4</span> <strong>Implante usando o Dashboard da Vercel</strong></p>
+       <ol>
+           <li>Faça login no <a href="https://vercel.com/dashboard" target="_blank">Dashboard da Vercel</a></li>
+           <li>Clique em "Add New" e selecione "Project"</li>
+           <li>Importe seu repositório Git</li>
+           <li>Configure as variáveis de ambiente (veja a seção abaixo)</li>
+           <li>Clique em "Deploy"</li>
+       </ol>
+   </div>
+
+   <div class="success">
+       <strong>Dica:</strong> A Vercel detectará automaticamente que é um projeto Next.js e aplicará as configurações recomendadas.
+   </div>
+
+   <h2 id="variaveis">Variáveis de Ambiente</h2>
+
+   <p>Configure as seguintes variáveis de ambiente na Vercel:</p>
+
+   <table>
+       <tr>
+           <th>Variável</th>
+           <th>Descrição</th>
+           <th>Exemplo</th>
+       </tr>
+       <tr>
+           <td>ADMIN_USERNAME</td>
+           <td>Nome de usuário do administrador (servidor)</td>
+           <td>admin123</td>
+       </tr>
+       <tr>
+           <td>ADMIN_PASSWORD</td>
+           <td>Senha do administrador (servidor)</td>
+           <td>senha_segura_123</td>
+       </tr>
+       <tr>
+           <td>NEXT_PUBLIC_ADMIN_USERNAME</td>
+           <td>Nome de usuário do administrador (cliente)</td>
+           <td>admin123</td>
+       </tr>
+       <tr>
+           <td>NEXT_PUBLIC_ADMIN_PASSWORD</td>
+           <td>Senha do administrador (cliente)</td>
+           <td>senha_segura_123</td>
+       </tr>
+       <tr>
+           <td>NEXT_PUBLIC_SITE_URL</td>
+           <td>URL do site em produção</td>
+           <td>https://seu-dominio.com</td>
+       </tr>
+   </table>
+
+   <div class="warning">
+       <strong>Atenção:</strong> Nunca compartilhe suas credenciais de administrador. Use senhas fortes e únicas para cada ambiente.
+   </div>
+
+   <h2 id="problemas">Solução de Problemas Comuns</h2>
+
+   <h3>Problemas de Build</h3>
+   
+   <div class="warning">
+       <strong>Problema:</strong> Falha no build com erros de módulos não encontrados.<br>
+       <strong>Solução:</strong> Verifique se todas as dependências estão instaladas corretamente. Execute <code>npm install</code> novamente.
+   </div>
+
+   <div class="warning">
+       <strong>Problema:</strong> Erros de variáveis de ambiente.<br>
+       <strong>Solução:</strong> Certifique-se de que todas as variáveis de ambiente necessárias estão definidas no arquivo <code>.env.local</code> ou no ambiente do servidor.
+   </div>
+
+   <h3>Problemas de Autenticação</h3>
+   
+   <div class="warning">
+       <strong>Problema:</strong> Não consegue fazer login como administrador.<br>
+       <strong>Solução:</strong> Verifique se as variáveis de ambiente ADMIN_USERNAME, ADMIN_PASSWORD, NEXT_PUBLIC_ADMIN_USERNAME e NEXT_PUBLIC_ADMIN_PASSWORD estão configuradas corretamente.
+   </div>
+
+   <h3>Problemas de Armazenamento</h3>
+   
+   <div class="warning">
+       <strong>Problema:</strong> Dados não estão sendo salvos corretamente.<br>
+       <strong>Solução:</strong> Em ambientes serverless como a Vercel, o armazenamento em arquivo não é persistente. Considere migrar para um banco de dados como MongoDB, PostgreSQL ou usar o Vercel KV.
+   </div>
+
+   <h3>Problemas de Performance</h3>
+   
+   <div class="warning">
+       <strong>Problema:</strong> Animações lentas em dispositivos móveis.<br>
+       <strong>Solução:</strong> Ative o "Modo Leve" clicando no botão flutuante no canto inferior direito da tela.
+   </div>
+
+   <script>
+       function openTab(evt, tabName) {
+           var i, tabcontent, tablinks;
+           tabcontent = document.getElementsByClassName("tabcontent");
+           for (i = 0; i < tabcontent.length; i++) {
+               tabcontent[i].style.display = "none";
+           }
+           tablinks = document.getElementsByClassName("tablinks");
+           for (i = 0; i < tablinks.length; i++) {
+               tablinks[i].className = tablinks[i].className.replace(" active", "");
+           }
+           document.getElementById(tabName).style.display = "block";
+           evt.currentTarget.className += " active";
+       }
+
+       // Inicializa a primeira aba como ativa
+       document.addEventListener('DOMContentLoaded', function() {
+           if (document.getElementsByClassName("tablinks").length > 0) {
+               document.getElementsByClassName("tablinks")[0].click();
+           }
+       });
+   </script>
+</body>
+</html>
+
