@@ -18,8 +18,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "AirDrop Galáctico",
-  description: "Sistema de reivindicação de AirDrop com tema galáctico para distribuição manual de tokens",
+  title: "AirDrop Astral",
+  description: "Sistema de reivindicação de AirDrop com tema astral para distribuição manual de tokens",
   // Adicionar meta tags para melhorar a performance
   viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   themeColor: "#000000",
@@ -27,13 +27,13 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-JfgoMWhc1jZ8Ze5yysaYlzOcr4CIXw.png",
+        url: "/anires.png",
         type: "image/png",
       },
     ],
     apple: [
       {
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-JfgoMWhc1jZ8Ze5yysaYlzOcr4CIXw.png",
+        url: "/anires.png",
         type: "image/png",
       },
     ],
@@ -56,12 +56,12 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://v0.blob.com" />
         <link
           rel="icon"
-          href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-JfgoMWhc1jZ8Ze5yysaYlzOcr4CIXw.png"
+          href="/anires.png"
           type="image/png"
         />
         <link
           rel="apple-touch-icon"
-          href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-JfgoMWhc1jZ8Ze5yysaYlzOcr4CIXw.png"
+          href="/anires.png"
         />
       </head>
       <body className={inter.className}>
