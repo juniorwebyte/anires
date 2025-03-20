@@ -1,6 +1,6 @@
-# WebyteCoin Airdrop
+# Anires Airdrop
 
-Este é o repositório oficial do sistema de airdrop WebyteCoin, uma plataforma de distribuição de tokens gratuitos com suporte multi-chain e sistema de referral.
+Este é o repositório oficial do sistema de airdrop Anires, uma plataforma de distribuição de tokens gratuitos com suporte multi-chain e sistema de referral.
 
 ## Características
 
@@ -21,8 +21,8 @@ Este é o repositório oficial do sistema de airdrop WebyteCoin, uma plataforma 
 
 1. Clone o repositório:
    \`\`\`
-   git clone https://github.com/seu-usuario/webytecoin-airdrop.git
-   cd webytecoin-airdrop
+   git clone https://github.com/juniorwebyte/anires.git
+   cd anires-airdrop
    \`\`\`
 
 2. Instale as dependências:
@@ -50,7 +50,7 @@ Este é o repositório oficial do sistema de airdrop WebyteCoin, uma plataforma 
    - `components/timeline.tsx`: Ajuste o cronograma do airdrop.
 
 5. Implante o contrato inteligente:
-   - Use o Remix IDE ou o Truffle para implantar o contrato `WebyteCoinAirdrop.sol` nas redes desejadas.
+   - Use o Remix IDE ou o Truffle para implantar o contrato `AniresAirdrop.sol` nas redes desejadas.
    - Atualize os endereços do contrato no arquivo `.env.local`.
 
 6. Execute o projeto localmente:
