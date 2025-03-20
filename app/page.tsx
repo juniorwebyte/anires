@@ -194,7 +194,7 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
                 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600"
               >
-                Street Dog Coin
+                AniRes
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -202,8 +202,8 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl"
               >
-                O primeiro token cripto com propósito social para ajudar cães de rua. Participe do nosso airdrop e faça
-                parte desta revolução.
+                O Futuro dos Animais Está em Suas Mãos. Tecnologia blockchain unida à compaixão. 
+                AniRes é mais do que um projeto, é uma revolução astral! Resgatamos, cuidamos e garantimos um destino digno para cada animal abandonado.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -247,8 +247,8 @@ export default function Home() {
             >
               <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] mx-auto animate-float">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-Lwlo4CyibHQIRkaFgNMeF9P1QNF4B1.png"
-                  alt="Street Dog Coin Logo"
+                  src="/anires.png"
+                  alt="AniRes Logo"
                   width={400}
                   height={400}
                   className="rounded-full animate-glow"
@@ -386,8 +386,8 @@ export default function Home() {
               className="flex-1"
             >
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sobre-D0RZ4hVBvEIqGVceS3ltCXHK3Asf6T.webp"
-                alt="Street Dog Mascot"
+                src="/mascote.jpg"
+                alt="AniRes Mascot"
                 width={500}
                 height={500}
                 className="rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-500"
@@ -438,7 +438,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-3xl md:text-4xl font-bold mb-4 text-blue-400"
             >
-              Por que Street Dog Coin?
+              Por que a AniRes?
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
