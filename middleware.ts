@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server"
 const allowedOrigins = [
   "https://anires.org",
   "https://www.anires.org",
-  "https://airdrop.anires.org,
+  "https://airdrop.anires.org",
   "https://vercel.app",
   "https://vercel.com",
 ]
