@@ -1,8 +1,15 @@
 "use client"
 
 import { useEffect, useState, useCallback, useMemo } from "react"
-import { Card, CardContent, Button } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Clock, Calendar, Rocket } from "lucide-react"
+
+// CONFIGURAÇÃO MANUAL DO TEMPO
+// Data específica configurada: 24/03/2025 às 06:00:00
+const TARGET_DATE = new Date(2025, 2, 24, 6, 0, 0) // Mês é 0-indexado (0=Jan, 1=Fev, 2=Mar...)
+
+// Se definido como true, o cronômetro ficará estático (não diminuirá com o tempo)
+const STATIC_COUNTDOWN = false
 
 interface TimeLeft {
   days: number
@@ -19,13 +26,10 @@ export default function CountdownTimer() {
     seconds: 0,
   })
   const [loading, setLoading] = useState(true)
-  const [launchDate, setLaunchDate] = useState<Date | null>(null)
-  const [isStarted, setIsStarted] = useState(false)
-  const [inputDate, setInputDate] = useState("2024-03-24T06:00:00")
 
   // Usar useCallback para evitar recriação da função em cada renderização
-  const calculateTimeLeft = useCallback((targetDate: Date) => {
-    const difference = targetDate.getTime() - new Date().getTime()
+  const calculateTimeLeft = useCallback(() => {
+    const difference = TARGET_DATE.getTime() - new Date().getTime()
 
     if (difference <= 0) {
       // O lançamento já ocorreu
@@ -41,14 +45,14 @@ export default function CountdownTimer() {
   }, [])
 
   useEffect(() => {
-    if (!isStarted) return
-
-    const targetDate = new Date(inputDate)
-    setLaunchDate(targetDate)
-
     // Calcular imediatamente
-    setTimeLeft(calculateTimeLeft(targetDate))
+    setTimeLeft(calculateTimeLeft())
     setLoading(false)
+
+    // Se o cronômetro for estático, não configure o intervalo
+    if (STATIC_COUNTDOWN) {
+      return
+    }
 
     // Verificar se o usuário prefere reduzir animações
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -58,25 +62,23 @@ export default function CountdownTimer() {
 
     // Atualizar a cada segundo
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(targetDate))
+      setTimeLeft(calculateTimeLeft())
     }, updateInterval)
 
     // Limpar o intervalo quando o componente for desmontado
     return () => clearInterval(timer)
-  }, [calculateTimeLeft, isStarted, inputDate])
+  }, [calculateTimeLeft])
 
-  // Memoizar a formatação da data para evitar recálculos desnecessários
+  // Formatar a data alvo para exibição
   const formattedDate = useMemo(() => {
-    if (!launchDate) return "Em breve"
-
     return new Intl.DateTimeFormat("pt-BR", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(launchDate)
-  }, [launchDate])
+    }).format(TARGET_DATE)
+  }, [])
 
   if (loading) {
     return (
@@ -101,7 +103,7 @@ export default function CountdownTimer() {
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
           <Calendar className="h-5 w-5 text-purple-400 mr-2" />
-          <h3 className="text-xl font-bold text-purple-400">Lançamento Oficial do ANIRES</h3>
+          <h3 className="text-xl font-bold text-purple-400">Lançamento Oficial do STDOG</h3>
         </div>
 
         <div className="flex items-center justify-center mb-2">
@@ -133,29 +135,12 @@ export default function CountdownTimer() {
           </div>
         </div>
 
-        <div className="text-center text-gray-300 text-sm mb-4">
+        <div className="text-center text-gray-300 text-sm">
           <Clock className="h-4 w-4 inline-block mr-1 text-purple-400" />
           Participe agora do pré-registro para garantir seus tokens no lançamento oficial!
-        </div>
-
-        <div className="text-center mb-4">
-          <input
-            type="datetime-local"
-            value={inputDate}
-            onChange={(e) => setInputDate(e.target.value)}
-            className="bg-purple-900/20 border border-purple-800/30 rounded-lg p-2 text-center text-white"
-          />
-        </div>
-
-        <div className="text-center">
-          <Button onClick={() => {
-            setIsStarted(true)
-            setLaunchDate(new Date(inputDate))
-          }} className="bg-purple-500 text-white px-4 py-2 rounded">
-            Iniciar Cronômetro
-          </Button>
         </div>
       </CardContent>
     </Card>
   )
 }
+
