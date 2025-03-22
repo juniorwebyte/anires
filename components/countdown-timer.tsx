@@ -101,7 +101,7 @@ export default function CountdownTimer() {
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
           <Calendar className="h-5 w-5 text-purple-400 mr-2" />
-          <h3 className="text-xl font-bold text-purple-400">Lançamento Oficial do $ANIRES</h3>
+          <h3 className="text-xl font-bold text-purple-400">Lançamento Oficial do ANIRES</h3>
         </div>
 
         <div className="flex items-center justify-center mb-2">
