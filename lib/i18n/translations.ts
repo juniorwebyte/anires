@@ -13,7 +13,7 @@ export const translations = {
       about: {
         title: "AniRes",
         description:
-          "A cryptocurrency with purpose, uniting blockchain technology and social impact to help street dogs around the world.",
+          "A cryptocurrency with purpose, uniting blockchain technology and social impact to help AniRes around the world.",
       },
       quickLinks: {
         title: "Quick Links",

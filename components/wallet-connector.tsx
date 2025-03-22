@@ -192,7 +192,7 @@ export default function WalletConnector({ onConnect, onDisconnect }: WalletConne
 
   // Verificar se o contrato é seguro
   const verifyContract = useCallback(async () => {
-    // Endereço do contrato do Street Dog Coin
+    // Endereço do contrato do AniRes
     const contractAddress = "0xA5F0A72A780F69BC6a476Cc6a37E533C2A046434" // Substitua pelo endereço real
 
     try {

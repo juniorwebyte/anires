@@ -103,7 +103,7 @@ export default function Footer() {
                   href="mailto:contato@anires.org"
                   className="text-gray-300 hover:text-blue-400 transition-colors"
                 >
-                  contato@anires.com
+                  contato@anires.org
                 </a>
               </li>
               <li className="mt-4">

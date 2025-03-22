@@ -208,7 +208,7 @@ export default function NotificationsPage() {
             <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">
               A
             </div>
-            <span className="font-bold text-white">Admin Street Dog Coin</span>
+            <span className="font-bold text-white">Admin AniRes</span>
           </div>
 
           <nav className="hidden md:flex items-center space-x-1">

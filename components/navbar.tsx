@@ -45,7 +45,7 @@ export default function Navbar({ onConnectClick, isWalletConnected = false, wall
           {/* Logo */}
           <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-Lwlo4CyibHQIRkaFgNMeF9P1QNF4B1.png"
+              src="/anires.png"
               alt="AniRes Logo"
               width={32}
               height={32}

@@ -1,14 +1,14 @@
 {
-  "name": "Street Dog Coin",
-  "short_name": "STDOG",
+  "name": "AniRes",
+  "short_name": "ANIRES",
   "icons": [
     {
-      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-JfgoMWhc1jZ8Ze5yysaYlzOcr4CIXw.png",
+      "src": "/anires.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-JfgoMWhc1jZ8Ze5yysaYlzOcr4CIXw.png",
+      "src": "/anires.png",
       "sizes": "512x512",
       "type": "image/png"
     }

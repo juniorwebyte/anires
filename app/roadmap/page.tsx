@@ -40,7 +40,7 @@ export default function RoadmapPage() {
               <h2 className="text-3xl font-bold mb-6 text-blue-400">Visão Geral</h2>
               <div className="prose prose-invert max-w-none">
                 <p className="text-gray-300">
-                  O roadmap do Street Dog Coin foi cuidadosamente planejado para garantir o crescimento sustentável do
+                  O roadmap do AniRes foi cuidadosamente planejado para garantir o crescimento sustentável do
                   projeto e maximizar o impacto social positivo. Dividimos nosso plano em fases, cada uma com objetivos
                   específicos e marcos a serem alcançados.
                 </p>
@@ -83,7 +83,7 @@ export default function RoadmapPage() {
                           <ul className="space-y-2 text-gray-300">
                             <li className="flex items-center">
                               <CheckCircle className="h-4 w-4 text-green-400 mr-2 flex-shrink-0" />
-                              <span>Concepção da ideia do Street Dog Coin</span>
+                              <span>Concepção da ideia do AniRes</span>
                             </li>
                             <li className="flex items-center">
                               <CheckCircle className="h-4 w-4 text-green-400 mr-2 flex-shrink-0" />
@@ -261,7 +261,7 @@ export default function RoadmapPage() {
                           <ul className="space-y-2 text-gray-300">
                             <li className="flex items-center">
                               <Clock className="h-4 w-4 text-blue-400 mr-2 flex-shrink-0" />
-                              <span>Lançamento oficial do token STDOG</span>
+                              <span>Lançamento oficial do token ANIRES</span>
                             </li>
                             <li className="flex items-center">
                               <Clock className="h-4 w-4 text-blue-400 mr-2 flex-shrink-0" />
@@ -446,7 +446,7 @@ export default function RoadmapPage() {
                                 Desenvolvimento do ecossistema próprio
                               </span>
                               <p className="mt-1">
-                                Criar uma blockchain própria focada em projetos de impacto social, com o $STDOG como
+                                Criar uma blockchain própria focada em projetos de impacto social, com o $ANIRES como
                                 token nativo.
                               </p>
                             </div>

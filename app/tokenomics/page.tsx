@@ -23,7 +23,7 @@ export default function TokenomicsPage() {
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600">
               Tokenomics
             </h1>
-            <p className="text-xl text-gray-300">Entenda a economia, distribuição e utilidade do token $STDOG.</p>
+            <p className="text-xl text-gray-300">Entenda a economia, distribuição e utilidade do token $ANIRES.</p>
           </motion.div>
         </div>
       </section>
@@ -42,12 +42,12 @@ export default function TokenomicsPage() {
               <h2 className="text-3xl font-bold mb-6 text-blue-400">Visão Geral</h2>
               <div className="prose prose-invert max-w-none">
                 <p className="text-gray-300">
-                  O Street Dog Coin ($STDOG) é um token ERC-20 com um fornecimento total de 5 bilhões de tokens. O
+                  O AniRes ($ANIRES) é um token ERC-20 com um fornecimento total de 5 bilhões de tokens. O
                   design econômico do token foi cuidadosamente planejado para garantir a sustentabilidade do projeto a
                   longo prazo e maximizar o impacto social positivo.
                 </p>
                 <p className="text-gray-300 mt-4">
-                  Uma característica fundamental do $STDOG é o mecanismo de taxas de transação, que direciona
+                  Uma característica fundamental do $ANIRES é o mecanismo de taxas de transação, que direciona
                   automaticamente uma porcentagem de cada transferência para um fundo de caridade descentralizado,
                   criando um fluxo contínuo de recursos para organizações que cuidam de cães de rua.
                 </p>
@@ -66,15 +66,15 @@ export default function TokenomicsPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Fornecimento Total:</span>
-                    <span className="text-blue-300 font-semibold">5.000.000.000 STDOG</span>
+                    <span className="text-blue-300 font-semibold">5.000.000.000 ANIRES</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Fornecimento Circulante:</span>
-                    <span className="text-blue-300 font-semibold">1.500.000.000 STDOG</span>
+                    <span className="text-blue-300 font-semibold">1.500.000.000 ANIRES</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Tokens Bloqueados:</span>
-                    <span className="text-blue-300 font-semibold">3.500.000.000 STDOG</span>
+                    <span className="text-blue-300 font-semibold">3.500.000.000 ANIRES</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Mecanismo de Queima:</span>
@@ -196,7 +196,7 @@ export default function TokenomicsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-blue-400 mb-2">Governança</h3>
                   <p className="text-gray-300">
-                    Os detentores de $STDOG podem votar em propostas importantes, incluindo a alocação de recursos do
+                    Os detentores de $ANIRES podem votar em propostas importantes, incluindo a alocação de recursos do
                     fundo de caridade, atualizações do protocolo e novas parcerias.
                   </p>
                 </div>
@@ -204,7 +204,7 @@ export default function TokenomicsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-blue-400 mb-2">Staking e Recompensas</h3>
                   <p className="text-gray-300">
-                    Os usuários poderão fazer staking de seus tokens $STDOG para receber recompensas passivas, com taxas
+                    Os usuários poderão fazer staking de seus tokens $ANIRES para receber recompensas passivas, com taxas
                     de APY variando de 5% a 20% dependendo do período de bloqueio.
                   </p>
                 </div>
@@ -212,7 +212,7 @@ export default function TokenomicsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-blue-400 mb-2">Acesso a Recursos Exclusivos</h3>
                   <p className="text-gray-300">
-                    Detentores de $STDOG têm acesso a recursos exclusivos, incluindo NFTs beneficentes, eventos
+                    Detentores de $ANIRES têm acesso a recursos exclusivos, incluindo NFTs beneficentes, eventos
                     especiais e oportunidades de networking com parceiros e organizações de proteção animal.
                   </p>
                 </div>
@@ -220,7 +220,7 @@ export default function TokenomicsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-blue-400 mb-2">Pagamentos e Doações</h3>
                   <p className="text-gray-300">
-                    O $STDOG pode ser utilizado para fazer doações diretas a abrigos e ONGs parceiras, com 0% de taxa de
+                    O $ANIRES pode ser utilizado para fazer doações diretas a abrigos e ONGs parceiras, com 0% de taxa de
                     transação para este tipo de transferência, maximizando o impacto da sua contribuição.
                   </p>
                 </div>
@@ -228,7 +228,7 @@ export default function TokenomicsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-blue-400 mb-2">Marketplace</h3>
                   <p className="text-gray-300">
-                    No futuro, o $STDOG será a moeda principal do nosso marketplace, onde os usuários poderão comprar
+                    No futuro, o $ANIRES será a moeda principal do nosso marketplace, onde os usuários poderão comprar
                     produtos e serviços relacionados a pets, com parte dos lucros sendo direcionada para o fundo de
                     caridade.
                   </p>
@@ -265,7 +265,7 @@ export default function TokenomicsPage() {
                 <div>
                   <h3 className="text-xl font-bold text-blue-400 mb-2">Auditoria de Segurança</h3>
                   <p className="text-gray-300">
-                    O contrato inteligente do $STDOG foi auditado por empresas de segurança renomadas como CertiK e
+                    O contrato inteligente do $ANIRES foi auditado por empresas de segurança renomadas como CertiK e
                     Hacken, garantindo a segurança dos fundos e a integridade do projeto.
                   </p>
                 </div>

@@ -202,7 +202,7 @@ export default function StatusPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 text-purple-400">Verificar Status da Reivindicação</h1>
           <p className="text-gray-300">
-            Verifique o status da sua reivindicação de tokens $STDOG inserindo o endereço da sua carteira abaixo.
+            Verifique o status da sua reivindicação de tokens $ANIRES inserindo o endereço da sua carteira abaixo.
           </p>
         </div>
 
@@ -278,7 +278,7 @@ export default function StatusPage() {
                 <div>
                   <CardTitle className="text-xl text-purple-400">Detalhes da Reivindicação</CardTitle>
                   <CardDescription className="text-gray-400">
-                    Informações sobre sua reivindicação de tokens $STDOG
+                    Informações sobre sua reivindicação de tokens $ANIRES
                   </CardDescription>
                 </div>
                 <Button
@@ -373,7 +373,7 @@ export default function StatusPage() {
                       <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4">
                         <p className="text-sm text-gray-400">Tokens Alocados</p>
                         <p className="text-lg font-bold text-purple-300">
-                          {claimData.tokensAllocated.toLocaleString()} $STDOG
+                          {claimData.tokensAllocated.toLocaleString()} $ANIRES
                         </p>
                       </div>
                       <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4">
@@ -560,7 +560,7 @@ export default function StatusPage() {
                 <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4">
                   <p className="text-sm text-gray-400">Tokens Distribuídos</p>
                   <p className="text-2xl font-bold text-purple-300">
-                    {stats.tokensDistributed.toLocaleString()} $STDOG
+                    {stats.tokensDistributed.toLocaleString()} $ANIRES
                   </p>
                 </div>
               </div>

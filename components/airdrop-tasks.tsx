@@ -225,46 +225,46 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
     {
       id: 1,
       title: "Seguir no Twitter",
-      description: "Siga @StreetDogCoin",
+      description: "Siga @aniresbank",
       status: "pending",
       current: true,
       inputValue: "",
       inputPlaceholder: "Digite seu nome de usuário do Twitter",
-      link: "https://x.com/StreetDogCoin",
-      linkText: "Seguir @StreetDogCoin",
+      link: "https://x.com/aniresbank",
+      linkText: "Seguir @aniresbank",
       icon: <Twitter className="h-5 w-5 text-blue-400" />,
     },
     {
       id: 2,
       title: "Retweet com Hashtags",
-      description: "Faça um quote retweet do tweet do Street Dog Coin com as hashtags",
+      description: "Faça um quote retweet do tweet do AniRes com as hashtags",
       status: "pending",
       current: false,
       inputValue: "",
       inputPlaceholder: "Cole o link do seu retweet",
-      link: "https://x.com/StreetDogCoin/status/1899498294054707634",
+      link: "https://x.com/aniresbank/status/1902540931510775987",
       linkText: "Ver tweet para retweet",
       icon: <Twitter className="h-5 w-5 text-blue-400" />,
     },
     {
       id: 3,
       title: "Curtir no Twitter",
-      description: "Curta o tweet do Street Dog Coin",
+      description: "Curta o tweet do AniRes",
       status: "pending",
       current: false,
-      link: "https://x.com/intent/like?tweet_id=1899498294054707634",
+      link: "https://x.com/intent/like?tweet_id=1902540931510775987",
       linkText: "Curtir tweet",
       icon: <Heart className="h-5 w-5 text-red-400" />,
     },
     {
       id: 4,
       title: "Entrar no Grupo do Telegram",
-      description: "Entre no grupo do Telegram do Street Dog Coin e obtenha seu ID",
+      description: "Entre no grupo do Telegram do AniRes e obtenha seu ID",
       status: "pending",
       current: false,
       inputValue: "",
       inputPlaceholder: "Digite seu ID do Telegram (ex: 6123567677)",
-      link: "https://t.me/StreetDogCoin",
+      link: "https://t.me/+QjlsDJcarak3YTQ5",
       linkText: "Entrar no grupo do Telegram",
       icon: <MessageCircle className="h-5 w-5 text-blue-400" />,
       secondaryLink: "https://t.me/userinfobot",
@@ -277,7 +277,7 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
   const [claimStatus, setClaimStatus] = useState<"idle" | "paying" | "confirming" | "completed" | "failed">("idle")
   const [isExploding, setIsExploding] = useState(false)
   const [hashtags] = useState(
-    "#airdrop #Dogecoin #eth #ShibaInu #mainnet #pepecoin #web3 #crypto #arbitrum #TieBank #BancoDigital #StreetDogCoin #CryptoForACause #CryptoForACause #DogAdoption #BlockchainForGood #CryptoWithPurpose #SupportAnimalRescue #DogRescue #StreetDogs #CharityCrypto #DogLovers",
+    "#airdrop #Dogecoin #eth #ShibaInu #mainnet #pepecoin #web3 #crypto #StreetDogCoin #TieBank #BancoDigital #AniRes #CryptoForACause #CryptoForACause #DogAdoption #tiebank #animalrescue #anires #DogRescue #StreetDogs #CharityCrypto #DogLovers",
   )
   const [existingClaim, setExistingClaim] = useState(false)
   const [systemConfig, setSystemConfig] = useState<any>(null)
@@ -560,7 +560,7 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
             toast({
               title: "Tokens Reivindicados!",
               description:
-                "Parabéns! Sua taxa foi paga com sucesso e seus tokens $STDOG foram reivindicados. Eles serão enviados para sua carteira em breve.",
+                "Parabéns! Sua taxa foi paga com sucesso e seus tokens $ANIRES foram reivindicados. Eles serão enviados para sua carteira em breve.",
               className: "bg-green-950 border-green-800 text-green-100",
             })
           } else {
@@ -654,7 +654,7 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
             <div>
               <h4 className="font-medium text-blue-400">Reivindicação já processada</h4>
               <p className="text-sm text-gray-300 mt-1">
-                Seu endereço de carteira já está registrado para receber tokens $STDOG. Não é necessário fazer uma nova
+                Seu endereço de carteira já está registrado para receber tokens $ANIRES. Não é necessário fazer uma nova
                 reivindicação.
               </p>
             </div>
@@ -669,7 +669,7 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
       <CardHeader className="border-b border-purple-900/20 bg-black/50">
         <CardTitle className="text-xl text-purple-400">Tarefas de Participação</CardTitle>
         <CardDescription className="text-gray-400">
-          Siga estas etapas para participar do airdrop Street Dog Coin e ter a chance de receber tokens gratuitos.
+          Siga estas etapas para participar do airdrop AniRes e ter a chance de receber tokens gratuitos.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -754,7 +754,7 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
           <div className="border border-purple-800/30 bg-purple-900/10 rounded-lg p-4">
             <h3 className="text-lg font-medium text-purple-300 mb-2">Reivindicar Tokens</h3>
             <p className="text-sm text-gray-300 mb-4">
-              Reivindique seus tokens $STDOG do airdrop do Street Dog Coin. Para completar a reivindicação, é necessário
+              Reivindique seus tokens $ANIRES do airdrop do AniRes. Para completar a reivindicação, é necessário
               pagar uma taxa de {FEE_AMOUNT} ETH (aproximadamente $0.04 USD).
             </p>
 
@@ -831,7 +831,7 @@ export default function AirdropTasks({ walletAddress, walletType }: AirdropTasks
                 <div>
                   <h4 className="font-medium text-green-400">Tokens Reivindicados!</h4>
                   <p className="text-sm text-gray-300 mt-1">
-                    Parabéns! Sua taxa foi paga com sucesso e seus tokens $STDOG foram reivindicados. Eles serão
+                    Parabéns! Sua taxa foi paga com sucesso e seus tokens $ANIRES foram reivindicados. Eles serão
                     enviados para sua carteira em breve.
                   </p>
                 </div>

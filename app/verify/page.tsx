@@ -107,7 +107,7 @@ export default function VerifyPage() {
                   <div>
                     <h4 className="font-medium text-green-400">Endereço Elegível!</h4>
                     <p className="text-sm text-gray-300 mt-1">
-                      Este endereço está elegível para receber {claimDetails?.tokensRequested || 1000} $STDOG tokens.
+                      Este endereço está elegível para receber {claimDetails?.tokensRequested || 100} $ANIRES tokens.
                     </p>
                     {claimDetails?.status === "processed" && (
                       <p className="text-sm text-green-300 mt-2">

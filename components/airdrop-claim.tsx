@@ -65,7 +65,7 @@ export default function AirdropClaim({ onWalletUpdate }: AirdropClaimProps) {
           <CardHeader className="border-b border-purple-900/20 bg-black/50">
             <CardTitle className="text-xl text-purple-400">Conecte sua Carteira</CardTitle>
             <CardDescription className="text-gray-400">
-              Conecte sua carteira para participar do AirDrop do Street Dog Coin
+              Conecte sua carteira para participar do AirDrop do AniRes
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">

@@ -26,15 +26,15 @@ export default function AdminNavbar({ onLogout }: AdminNavbarProps) {
           {/* Substituir a letra A por uma imagem de logo */}
           <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/street-logo-Lwlo4CyibHQIRkaFgNMeF9P1QNF4B1.png"
-              alt="Street Dog Coin Logo"
+              src="anires.png"
+              alt="AniRes"
               width={32}
               height={32}
               className="object-cover"
               priority
             />
           </div>
-          <span className="font-bold text-white">Admin Street Dog Coin</span>
+          <span className="font-bold text-white">Admin AniRes</span>
         </div>
 
         <nav className="hidden md:flex items-center space-x-1">
