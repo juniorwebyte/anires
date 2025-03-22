@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useState, useCallback, useMemo } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, Button } from "@/components/ui/card"
 import { Clock, Calendar, Rocket } from "lucide-react"
-import { getLaunchDate } from "@/lib/storage-service"
 
 interface TimeLeft {
   days: number
@@ -21,6 +20,8 @@ export default function CountdownTimer() {
   })
   const [loading, setLoading] = useState(true)
   const [launchDate, setLaunchDate] = useState<Date | null>(null)
+  const [isStarted, setIsStarted] = useState(false)
+  const [inputDate, setInputDate] = useState("2024-03-24T06:00:00")
 
   // Usar useCallback para evitar recriação da função em cada renderização
   const calculateTimeLeft = useCallback((targetDate: Date) => {
@@ -40,20 +41,9 @@ export default function CountdownTimer() {
   }, [])
 
   useEffect(() => {
-    // Inicializar com uma data padrão para evitar problemas de renderização
-    let targetDate = new Date()
-    targetDate.setDate(targetDate.getDate() + 15) // 15 dias a partir de agora por padrão
+    if (!isStarted) return
 
-    try {
-      // Tentar obter a data de lançamento do armazenamento
-      const storedLaunchDate = getLaunchDate()
-      if (storedLaunchDate) {
-        targetDate = storedLaunchDate
-        setLaunchDate(storedLaunchDate)
-      }
-    } catch (error) {
-      console.error("Erro ao obter data de lançamento:", error)
-    }
+    let targetDate = new Date(inputDate)
 
     // Calcular imediatamente
     setTimeLeft(calculateTimeLeft(targetDate))
@@ -63,7 +53,7 @@ export default function CountdownTimer() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     // Atualizar a cada segundo apenas se não preferir reduzir animações
-    const updateInterval = prefersReducedMotion ? 10000 : 100 // 10 segundos ou 1 segundo
+    const updateInterval = prefersReducedMotion ? 10000 : 1000 // 10 segundos ou 1 segundo
 
     // Atualizar a cada segundo
     const timer = setInterval(() => {
@@ -72,7 +62,7 @@ export default function CountdownTimer() {
 
     // Limpar o intervalo quando o componente for desmontado
     return () => clearInterval(timer)
-  }, [calculateTimeLeft])
+  }, [calculateTimeLeft, isStarted, inputDate])
 
   // Memoizar a formatação da data para evitar recálculos desnecessários
   const formattedDate = useMemo(() => {
@@ -142,12 +132,26 @@ export default function CountdownTimer() {
           </div>
         </div>
 
-        <div className="text-center text-gray-300 text-sm">
+        <div className="text-center text-gray-300 text-sm mb-4">
           <Clock className="h-4 w-4 inline-block mr-1 text-purple-400" />
           Participe agora do pré-registro para garantir seus tokens no lançamento oficial!
+        </div>
+
+        <div className="text-center mb-4">
+          <input
+            type="datetime-local"
+            value={inputDate}
+            onChange={(e) => setInputDate(e.target.value)}
+            className="bg-purple-900/20 border border-purple-800/30 rounded-lg p-2 text-center text-white"
+          />
+        </div>
+
+        <div className="text-center">
+          <Button onClick={() => setIsStarted(true)} className="bg-purple-500 text-white px-4 py-2 rounded">
+            Iniciar Cronômetro
+          </Button>
         </div>
       </CardContent>
     </Card>
   )
 }
-
