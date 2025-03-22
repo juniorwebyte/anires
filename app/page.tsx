@@ -714,7 +714,7 @@ export default function Home() {
             >
               <RoadmapItem
                 phase="Fase 0"
-                title="Concepção (2021-2022)"
+                title="Concepção"
                 items={[
                   "Concepção da ideia do AniRes",
                   "Planejamento estratégico inicial",
@@ -734,7 +734,7 @@ export default function Home() {
             >
               <RoadmapItem
                 phase="Fase 1"
-                title="Estudos e Viabilidade (2023-2024)"
+                title="Estudos e Viabilidade"
                 items={[
                   "Desenvolvimento e auditoria do contrato inteligente",
                   "Pesquisa para construção da fábrica de ração",
@@ -753,7 +753,7 @@ export default function Home() {
             >
               <RoadmapItem
                 phase="Fase 2"
-                title="Lançamento (Q1 2025)"
+                title="Lançamento"
                 items={[
                   "Lançamento oficial do token ANIRES",
                   "Início da distribuição do Airdrop",
