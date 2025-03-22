@@ -134,10 +134,10 @@ export default function AboutPage() {
                   Enquanto o mundo cripto crescia, um grupo de apaixonados por animais
                   percebeu uma oportunidade única – e se cada transação pudesse salvar vidas? Assim, em 2021, nasceu a
                   AniRes (ANIRES), um token criado para unir blockchain e impacto social. 
-                  Nossa Jornada: 2022 –
-                  Estruturamos o whitepaper e tokenomics. 2023-2024 – Estudamos a viabilidade da fábrica de ração e do
+                  Nossa Jornada: Estruturamos o whitepaper e tokenomics. 
+                  Estudamos a viabilidade da fábrica de ração e do
                   abrigo para cães, criando soluções reais para os animais. 
-                  2025 – Lançamento do token e airdrop!
+                  Lançamento do token e airdrop!
                   Expansão para marketplace pet, DEX, NFTs sociais e doações rastreáveis. Por que o ANIRES será um
                   sucesso? Inovação real: Um token com propósito e impacto direto. 
                   Transparência total: Cada doação é
@@ -293,7 +293,7 @@ export default function AboutPage() {
                   whileHover={{ x: -5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">2021-2022 - Concepção</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">Concepção</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Rocket className="h-4 w-4 text-blue-400" />
@@ -318,7 +318,7 @@ export default function AboutPage() {
                   whileHover={{ x: -5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">2023-2024 - Estudos e Viabilidade</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">Estudos e Viabilidade</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Coins className="h-4 w-4 text-blue-400" />
@@ -345,7 +345,7 @@ export default function AboutPage() {
                   whileHover={{ x: 5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">Q1 2025 - Lançamento</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">Lançamento</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Rocket className="h-4 w-4 text-blue-400" />
@@ -370,7 +370,7 @@ export default function AboutPage() {
                   whileHover={{ x: 5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">S2 2025 - Expansão</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">Expansão</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Coins className="h-4 w-4 text-blue-400" />

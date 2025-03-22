@@ -22,7 +22,7 @@ export default function Footer() {
               <Link href="https://x.com/aniresbank" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
                 <Twitter className="h-5 w-5" />
               </Link>
-              <Link href="#" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
+              <Link href="https://www.facebook.com/people/Anires-Animal-Rescue/61574159169589/" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
                 <Facebook className="h-5 w-5" />
               </Link>
               <Link href="https://www.instagram.com/aniresbank/" target="_blank" className="text-blue-400 hover:text-blue-300 transition-colors">
