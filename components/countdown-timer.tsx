@@ -43,7 +43,8 @@ export default function CountdownTimer() {
   useEffect(() => {
     if (!isStarted) return
 
-    let targetDate = new Date(inputDate)
+    const targetDate = new Date(inputDate)
+    setLaunchDate(targetDate)
 
     // Calcular imediatamente
     setTimeLeft(calculateTimeLeft(targetDate))
