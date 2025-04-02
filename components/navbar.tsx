@@ -3,12 +3,12 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Wallet, Menu, X, CheckCircle } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import LanguageSwitcher from "@/components/language-switcher"
+import ConnectWalletButton from "@/components/connect-wallet-button"
 
 interface NavbarProps {
   onConnectClick?: () => void
@@ -45,15 +45,15 @@ export default function Navbar({ onConnectClick, isWalletConnected = false, wall
           {/* Logo */}
           <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
             <Image
-              src="/anires.png"
-              alt="AniRes Logo"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/anires-5t475e82C0gIE9LYJM8EhAitHkEnag.png"
+              alt="Anires Logo"
               width={32}
               height={32}
               className="object-cover"
               priority
             />
           </div>
-          <span className="font-bold text-white">AniRes</span>
+          <span className="font-bold text-white">Animal Rescue</span>
         </div>
 
         {/* Desktop Navigation */}
@@ -78,24 +78,7 @@ export default function Navbar({ onConnectClick, isWalletConnected = false, wall
         {/* Mobile Menu Button */}
         <div className="flex md:hidden items-center gap-2">
           <LanguageSwitcher />
-          {isWalletConnected ? (
-            <Button
-              className="bg-green-600 hover:bg-green-700 text-white rounded-md px-3 py-1 flex items-center gap-1"
-              size="sm"
-            >
-              <CheckCircle className="h-3 w-3" />
-              <span>{walletAddress ? formatWalletAddress(walletAddress) : t("navbar.connected")}</span>
-            </Button>
-          ) : (
-            <Button
-              onClick={onConnectClick}
-              className="bg-purple-600 hover:bg-purple-700 text-white rounded-md px-3 py-1 flex items-center gap-1"
-              size="sm"
-            >
-              <Wallet className="h-3 w-3" />
-              <span>{t("navbar.connect")}</span>
-            </Button>
-          )}
+          <ConnectWalletButton />
           <button
             onClick={toggleMobileMenu}
             className="p-2 text-gray-300 hover:text-purple-300 focus:outline-none"
@@ -106,20 +89,9 @@ export default function Navbar({ onConnectClick, isWalletConnected = false, wall
         </div>
 
         {/* Desktop Connect Button */}
-        {isWalletConnected ? (
-          <Button className="hidden md:flex bg-green-600 hover:bg-green-700 text-white rounded-md px-4 py-2 items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
-            <span>{walletAddress ? formatWalletAddress(walletAddress) : t("navbar.connected")}</span>
-          </Button>
-        ) : (
-          <Button
-            onClick={onConnectClick}
-            className="hidden md:flex bg-purple-600 hover:bg-purple-700 text-white rounded-md px-4 py-2 items-center gap-2"
-          >
-            <Wallet className="h-4 w-4" />
-            <span>{t("navbar.connect")}</span>
-          </Button>
-        )}
+        <div className="hidden md:block">
+          <ConnectWalletButton />
+        </div>
       </div>
 
       {/* Mobile Navigation Menu */}

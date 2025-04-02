@@ -1,69 +1,90 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
-// Admin WhatsApp - Números para notificação
-const ADMIN_WHATSAPP_NUMBERS = [
-  {
-    name: "Admin 1",
-    number: "5511984801839",
-    apiKey: "1782254",
-  },
-  {
-    name: "Admin 2",
-    number: "5511947366820",
-    apiKey: "7070864",
-  },
-]
+export async function GET(req: NextRequest) {
+  console.log("Iniciando envio direto de WhatsApp (método de fallback)")
 
-// Função para enviar mensagem diretamente para o WhatsApp usando a API do WhatsApp
-export async function POST(request: Request) {
   try {
-    const { phoneNumber, message, adminIndex } = await request.json()
+    // Obter parâmetros da URL
+    const url = new URL(req.url)
+    const walletAddress = url.searchParams.get("walletAddress")
+    const customMessage = url.searchParams.get("message")
 
-    if ((!phoneNumber && adminIndex === undefined) || !message) {
+    // Validar parâmetros
+    if (!walletAddress && !customMessage) {
       return NextResponse.json(
-        { success: false, message: "Número de telefone/índice de admin e mensagem são obrigatórios" },
+        {
+          success: false,
+          message: "Parâmetros insuficientes. É necessário fornecer walletAddress ou message.",
+        },
         { status: 400 },
       )
     }
 
-    // Determinar para qual número enviar
-    let targetNumber, apiKey
+    // Preparar mensagem
+    const message =
+      customMessage ||
+      `🚨 Nova Reivindicação ANIRES (Fallback) 🚨\n\nCarteira: ${walletAddress}\nData: ${new Date().toLocaleString("pt-BR")}`
 
-    if (adminIndex !== undefined) {
-      // Enviar para um admin específico
-      if (adminIndex < 0 || adminIndex >= ADMIN_WHATSAPP_NUMBERS.length) {
-        return NextResponse.json({ success: false, message: "Índice de administrador inválido" }, { status: 400 })
-      }
+    // Configuração dos números e chaves API
+    const targets = [
+      { phone: "5511984801839", apiKey: "1782254", name: "admin1" },
+      { phone: "5511947366820", apiKey: "7070864", name: "admin2" },
+    ]
 
-      targetNumber = ADMIN_WHATSAPP_NUMBERS[adminIndex].number
-      apiKey = ADMIN_WHATSAPP_NUMBERS[adminIndex].apiKey
-    } else {
-      // Enviar para um número personalizado
-      // Remover caracteres não numéricos do número de telefone
-      targetNumber = phoneNumber.replace(/\D/g, "")
+    // Selecionar API key com base no último dígito do endereço da carteira (para balanceamento)
+    const lastChar = walletAddress ? walletAddress.slice(-1) : "0"
+    const targetIndex = Number.parseInt(lastChar, 16) % targets.length
+    const target = targets[targetIndex]
 
-      // Usar a API key do primeiro admin por padrão
-      apiKey = ADMIN_WHATSAPP_NUMBERS[0].apiKey
-    }
+    console.log(`Usando API key de ${target.name} para envio de fallback`)
 
-    // Usar a API CallMeBot para enviar a mensagem
+    // Codificar a mensagem para URL
     const encodedMessage = encodeURIComponent(message)
-    const apiUrl = `https://api.callmebot.com/whatsapp.php?phone=${targetNumber}&text=${encodedMessage}&apikey=${apiKey}`
 
-    const response = await fetch(apiUrl)
+    // Construir URL da API
+    const apiUrl = `https://api.callmebot.com/whatsapp.php?phone=${target.phone}&text=${encodedMessage}&apikey=${target.apiKey}`
 
-    if (!response.ok) {
-      throw new Error(`Erro ao enviar mensagem: ${await response.text()}`)
-    }
+    // Configurar timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+    // Fazer a requisição
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      },
+      signal: controller.signal,
+      cache: "no-store",
+    })
+
+    clearTimeout(timeoutId)
+
+    // Processar resposta
+    const responseText = await response.text()
+    console.log(`Resposta da API de fallback:`, responseText)
+
+    // Verificar se a mensagem foi enviada com sucesso
+    const isSuccess =
+      responseText.includes("Message queued") ||
+      responseText.includes("Message Sent") ||
+      responseText.includes("WhatsApp message")
 
     return NextResponse.json({
-      success: true,
-      message: "Mensagem enviada com sucesso",
+      success: isSuccess,
+      message: isSuccess ? "Mensagem de fallback enviada com sucesso" : "Falha ao enviar mensagem de fallback",
+      response: responseText,
     })
   } catch (error) {
-    console.error("Erro ao enviar mensagem WhatsApp:", error)
+    console.error("Erro ao enviar mensagem de fallback:", error)
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : "Erro desconhecido" },
+      {
+        success: false,
+        message: "Erro ao enviar mensagem de fallback",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     )
   }

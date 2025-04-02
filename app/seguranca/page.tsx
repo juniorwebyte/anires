@@ -1,164 +1,220 @@
-import GalaxyAnimation from "@/components/galaxy-animation"
-import Navbar from "@/components/navbar"
+import type { Metadata } from "next"
+import { Shield, Lock, AlertTriangle, CheckCircle, ExternalLink } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Lock, CheckCircle, AlertTriangle } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "Segurança | AniRes",
+  description: "Informações de segurança e melhores práticas para usuários do AniRes",
+}
 
 export default function SecurityPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-black text-white relative overflow-hidden">
-      <GalaxyAnimation />
-      <Navbar />
-
-      <div className="max-w-4xl w-full z-10 mt-20 pb-16">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2 text-purple-400">Segurança do Airdrop AniRes</h1>
-          <p className="text-gray-300">Entenda como protegemos suas transações e mantemos seu airdrop seguro</p>
+    <main className="container mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center mb-8">
+          <Shield className="h-8 w-8 mr-3 text-purple-500" />
+          <h1 className="text-3xl font-bold">Centro de Segurança AniRes</h1>
         </div>
 
-        <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden mb-8">
-          <CardHeader className="border-b border-purple-900/20 bg-black/50">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-purple-400" />
-              <CardTitle className="text-xl text-purple-400">Nosso Compromisso com Segurança</CardTitle>
-            </div>
-            <CardDescription className="text-gray-400">
-              Como protegemos suas transações e garantimos a segurança do seu airdrop
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <p className="text-gray-300">
-              No airdrop do AniRes, a segurança é nossa prioridade número um. Implementamos várias camadas de
-              proteção para garantir que suas transações sejam seguras e que seu airdrop esteja protegido contra
-              ameaças.
-            </p>
+        <Alert className="mb-8 border-purple-800 bg-purple-950/50">
+          <CheckCircle className="h-5 w-5 text-purple-400" />
+          <AlertTitle className="text-purple-300">Site Oficial AniRes</AlertTitle>
+          <AlertDescription className="text-purple-200">
+            Você está no site oficial do AniRes. Sempre verifique se está acessando https://anires.org ou seus
+            subdomínios oficiais.
+          </AlertDescription>
+        </Alert>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-purple-400" />
-                  <h3 className="font-medium text-purple-300">Conexão Segura</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
+            <CardHeader className="border-b border-purple-900/20 bg-black/50">
+              <CardTitle className="text-xl text-purple-400">Como Verificar a Autenticidade</CardTitle>
+              <CardDescription className="text-gray-400">
+                Certifique-se de que está no site oficial do AniRes
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-start">
+                  <CheckCircle className="h-5 w-5 mr-2 text-green-500 mt-0.5" />
+                  <p>
+                    Verifique se o URL é <strong>https://anires.org</strong> ou um subdomínio oficial como{" "}
+                    <strong>app.anires.org</strong>
+                  </p>
                 </div>
-                <p className="text-gray-300 text-sm">
-                  Todas as conexões com nosso site são protegidas por HTTPS, garantindo que seus dados sejam
-                  criptografados durante a transmissão.
-                </p>
-              </div>
-
-              <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-purple-400" />
-                  <h3 className="font-medium text-purple-300">Verificação de Contratos</h3>
+                <div className="flex items-start">
+                  <CheckCircle className="h-5 w-5 mr-2 text-green-500 mt-0.5" />
+                  <p>Confirme que há um cadeado na barra de endereço do seu navegador</p>
                 </div>
-                <p className="text-gray-300 text-sm">
-                  Nossos contratos inteligentes são verificados e auditados por empresas de segurança respeitadas no
-                  setor.
-                </p>
-              </div>
-
-              <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-purple-400" />
-                  <h3 className="font-medium text-purple-300">Proteção contra Phishing</h3>
+                <div className="flex items-start">
+                  <CheckCircle className="h-5 w-5 mr-2 text-green-500 mt-0.5" />
+                  <p>Nossos contratos oficiais estão verificados no Etherscan/BSCScan</p>
                 </div>
-                <p className="text-gray-300 text-sm">
-                  Implementamos medidas para proteger nossos usuários contra sites de phishing e tentativas de fraude.
-                </p>
-              </div>
-
-              <div className="bg-purple-900/10 border border-purple-800/20 rounded-lg p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-purple-400" />
-                  <h3 className="font-medium text-purple-300">Alertas de Segurança</h3>
+                <div className="flex items-start">
+                  <CheckCircle className="h-5 w-5 mr-2 text-green-500 mt-0.5" />
+                  <p>Sempre acesse o site através de nossos canais oficiais</p>
                 </div>
-                <p className="text-gray-300 text-sm">
-                  Nosso sistema monitora constantemente atividades suspeitas e alerta os usuários sobre possíveis
-                  riscos.
-                </p>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden mb-8">
-          <CardHeader className="border-b border-purple-900/20 bg-black/50">
-            <CardTitle className="text-xl text-purple-400">Segurança do Airdrop</CardTitle>
-            <CardDescription className="text-gray-400">
-              Medidas específicas para garantir a segurança do processo de airdrop
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              <p className="text-gray-300">
-                Para garantir que o processo de airdrop seja seguro e justo, implementamos as seguintes medidas:
-              </p>
+          <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
+            <CardHeader className="border-b border-purple-900/20 bg-black/50">
+              <CardTitle className="text-xl text-purple-400">Alertas de Segurança</CardTitle>
+              <CardDescription className="text-gray-400">Fique atento a estas ameaças comuns</CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-start">
+                  <AlertTriangle className="h-5 w-5 mr-2 text-yellow-500 mt-0.5" />
+                  <p>Nunca compartilhe sua frase de recuperação ou chaves privadas com ninguém</p>
+                </div>
+                <div className="flex items-start">
+                  <AlertTriangle className="h-5 w-5 mr-2 text-yellow-500 mt-0.5" />
+                  <p>Desconfie de ofertas que parecem boas demais para ser verdade</p>
+                </div>
+                <div className="flex items-start">
+                  <AlertTriangle className="h-5 w-5 mr-2 text-yellow-500 mt-0.5" />
+                  <p>Cuidado com sites falsos que imitam o AniRes</p>
+                </div>
+                <div className="flex items-start">
+                  <AlertTriangle className="h-5 w-5 mr-2 text-yellow-500 mt-0.5" />
+                  <p>Verifique sempre as transações antes de confirmá-las em sua carteira</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
+        <h2 className="text-2xl font-bold mb-6 text-purple-400">Melhores Práticas de Segurança</h2>
+
+        <div className="space-y-6 mb-12">
+          <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
+            <CardHeader className="border-b border-purple-900/20 bg-black/50">
+              <CardTitle className="text-xl text-purple-400">Proteja sua Carteira</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
               <ul className="space-y-3">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-medium text-green-300">Verificação de carteira</h4>
-                    <p className="text-gray-300 text-sm">
-                      Cada carteira passa por um processo de verificação para garantir que seja legítima e não esteja
-                      participando de múltiplos airdrops.
-                    </p>
-                  </div>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Use uma carteira de hardware para armazenar grandes quantidades de tokens</span>
                 </li>
-
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-medium text-green-300">Contratos inteligentes auditados</h4>
-                    <p className="text-gray-300 text-sm">
-                      Nossos contratos de distribuição de tokens foram auditados por empresas de segurança para garantir
-                      que não haja vulnerabilidades.
-                    </p>
-                  </div>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Ative a autenticação de dois fatores (2FA) em todas as suas contas</span>
                 </li>
-
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-medium text-green-300">Proteção contra bots</h4>
-                    <p className="text-gray-300 text-sm">
-                      Implementamos medidas para detectar e bloquear bots que tentam participar do airdrop de forma
-                      automatizada.
-                    </p>
-                  </div>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Mantenha seu software de carteira e navegador sempre atualizados</span>
                 </li>
-
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-medium text-green-300">Distribuição transparente</h4>
-                    <p className="text-gray-300 text-sm">
-                      Todo o processo de distribuição de tokens é transparente e pode ser verificado na blockchain.
-                    </p>
-                  </div>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Faça backup da sua frase de recuperação em um local seguro offline</span>
                 </li>
               </ul>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
-          <CardHeader className="border-b border-purple-900/20 bg-black/50">
-            <CardTitle className="text-xl text-purple-400">Contato de Segurança</CardTitle>
-            <CardDescription className="text-gray-400">
-              Como reportar problemas de segurança ou atividades suspeitas
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <p className="text-gray-300 mb-4">
-              Se você identificar qualquer problema de segurança, atividade suspeita ou acreditar que sua conta foi
-              comprometida, entre em contato conosco imediatamente:
-            </p>
+          <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
+            <CardHeader className="border-b border-purple-900/20 bg-black/50">
+              <CardTitle className="text-xl text-purple-400">Transações Seguras</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Sempre verifique o endereço do destinatário antes de enviar tokens</span>
+                </li>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Comece com pequenas transações de teste antes de enviar grandes quantidades</span>
+                </li>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Verifique os detalhes do contrato inteligente antes de interagir com ele</span>
+                </li>
+                <li className="flex items-start">
+                  <Lock className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
+                  <span>Tenha cuidado com solicitações de aprovação de gastos ilimitados</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
 
-            <div className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4">
-              <p className="text-blue-300 font-medium">E-mail de Segurança:</p>
-              <p className="text-blue-100">seguranca@anires.org</p>
+        <div className="bg-purple-900/20 border border-purple-800/30 rounded-lg p-6 mb-12">
+          <h2 className="text-2xl font-bold mb-4 text-purple-300">Contratos Oficiais AniRes</h2>
+          <p className="mb-4 text-gray-300">Sempre verifique se está interagindo com nossos contratos oficiais:</p>
+
+          <div className="space-y-3">
+            <div className="bg-black/30 p-3 rounded-md border border-purple-800/20">
+              <p className="text-sm text-gray-400">Token AniRes (ANIRES)</p>
+              <div className="flex items-center justify-between">
+                <code className="text-purple-300 font-mono text-sm">0x65B7ed11edE43cD2be4414aABdc7Cc7911847203</code>
+                <a
+                  href="https://bscscan.com/address/0x65b7ed11ede43cd2be4414aabdc7cc7911847203"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 hover:text-purple-300 flex items-center text-sm"
+                >
+                  Ver na BscScan <ExternalLink className="h-3 w-3 ml-1" />
+                </a>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="bg-black/30 p-3 rounded-md border border-purple-800/20">
+              <p className="text-sm text-gray-400">Contrato de Staking</p>
+              <div className="flex items-center justify-between">
+                <code className="text-purple-300 font-mono text-sm">0x0987654321098765432109876543210987654321</code>
+                <a
+                  href="https://etherscan.io/address/0x0987654321098765432109876543210987654321"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 hover:text-purple-300 flex items-center text-sm"
+                >
+                  Ver na BscScan <ExternalLink className="h-3 w-3 ml-1" />
+                </a>
+              </div>
+            </div>
+
+            <div className="bg-black/30 p-3 rounded-md border border-purple-800/20">
+              <p className="text-sm text-gray-400">Contrato de Presale</p>
+              <div className="flex items-center justify-between">
+                <code className="text-purple-300 font-mono text-sm">0xc008Da18Be69e3D77863d665b6F5278B9105e4b8</code>
+                <a
+                  href="https://bscscan.com/address/0xc008da18be69e3d77863d665b6f5278b9105e4b8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 hover:text-purple-300 flex items-center text-sm"
+                >
+                  Ver na BscScan <ExternalLink className="h-3 w-3 ml-1" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-purple-400">Reportar um Problema de Segurança</h2>
+          <p className="mb-6 text-gray-300">
+            Encontrou um problema de segurança ou um site falso do AniRes? Informe nossa equipe imediatamente.
+          </p>
+          <Button asChild className="bg-purple-600 hover:bg-purple-700">
+            <Link href="/seguranca/reportar">Reportar Problema de Segurança</Link>
+          </Button>
+        </div>
+
+        <Alert className="border-yellow-800 bg-yellow-950/50">
+          <AlertTriangle className="h-5 w-5 text-yellow-400" />
+          <AlertTitle className="text-yellow-300">Lembre-se</AlertTitle>
+          <AlertDescription className="text-yellow-200">
+            A equipe do AniRes nunca solicitará sua frase de recuperação, chaves privadas ou que você envie tokens para
+            "verificar" sua carteira. Nunca compartilhe essas informações com ninguém.
+          </AlertDescription>
+        </Alert>
       </div>
     </main>
   )

@@ -1,300 +1,122 @@
 "use client"
 
-import { useState } from "react"
+import { motion } from "framer-motion"
+import { useEffect, useState, useRef } from "react"
+import { useInView } from "framer-motion"
 
-import type React from "react"
-import { useEffect, useRef } from "react"
-import { motion, useAnimation, useInView } from "framer-motion"
-
-// Componente para animar a entrada de elementos quando entram no viewport
+// Componente para animar elementos quando entram na viewport
 export const FadeInWhenVisible = ({
   children,
   delay = 0,
   duration = 0.5,
-  className = "",
-  direction = "up", // "up", "down", "left", "right"
-}: {
-  children: React.ReactNode
-  delay?: number
-  duration?: number
-  className?: string
-  direction?: "up" | "down" | "left" | "right"
+  threshold = 0.1,
+  direction = null, // "up", "down", "left", "right", "scale"
 }) => {
-  const controls = useAnimation()
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const isInView = useInView(ref, { once: true, threshold })
 
-  // Determinar a direção da animação
-  const getDirectionVariants = () => {
-    switch (direction) {
-      case "up":
-        return { hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }
-      case "down":
-        return { hidden: { y: -50, opacity: 0 }, visible: { y: 0, opacity: 1 } }
-      case "left":
-        return { hidden: { x: 50, opacity: 0 }, visible: { x: 0, opacity: 1 } }
-      case "right":
-        return { hidden: { x: -50, opacity: 0 }, visible: { x: 0, opacity: 1 } }
-      default:
-        return { hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }
-    }
-  }
-
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible")
-    }
-  }, [controls, isInView])
+  // Configurar variantes com base na direção
+  const initial = { opacity: 0 }
+  if (direction === "up") initial.y = 50
+  if (direction === "down") initial.y = -50
+  if (direction === "left") initial.x = 50
+  if (direction === "right") initial.x = -50
+  if (direction === "scale") initial.scale = 0.8
 
   return (
     <motion.div
       ref={ref}
-      initial="hidden"
-      animate={controls}
-      variants={getDirectionVariants()}
+      initial={initial}
+      animate={isInView ? { opacity: 1, x: 0, y: 0, scale: 1 } : initial}
       transition={{ duration, delay, ease: "easeOut" }}
-      className={className}
     >
       {children}
     </motion.div>
   )
 }
 
-// Componente para animar texto com efeito de digitação
-export const TypewriterText = ({
-  text,
-  speed = 0.05,
-  delay = 0,
-  className = "",
-}: {
-  text: string
-  speed?: number
-  delay?: number
-  className?: string
-}) => {
-  const controls = useAnimation()
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
-
-  useEffect(() => {
-    if (isInView) {
-      controls.start({
-        opacity: 1,
-        transition: {
-          delay,
-          staggerChildren: speed,
-        },
-      })
-    }
-  }, [controls, isInView, delay, speed])
-
-  return (
-    <motion.div ref={ref} initial={{ opacity: 0 }} animate={controls} className={className}>
-      {text.split("").map((char, index) => (
-        <motion.span
-          key={`${char}-${index}`}
-          initial={{ opacity: 0 }}
-          variants={{
-            opacity: 1,
-          }}
-        >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
-      ))}
-    </motion.div>
-  )
-}
-
-// Componente para animar partículas flutuantes
-export const FloatingParticles = ({
-  count = 20,
-  colors = ["#8A2BE2", "#FFD700", "#1E90FF", "#FFFFFF"],
-  className = "",
-}: {
-  count?: number
-  colors?: string[]
-  className?: string
-}) => {
-  return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
-      {Array.from({ length: count }).map((_, index) => (
-        <motion.div
-          key={index}
-          className="absolute rounded-full"
-          initial={{
-            x: `${Math.random() * 100}%`,
-            y: `${Math.random() * 100}%`,
-            scale: Math.random() * 0.5 + 0.5,
-            opacity: Math.random() * 0.5 + 0.3,
-            backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-          }}
-          animate={{
-            x: [`${Math.random() * 100}%`, `${Math.random() * 100}%`, `${Math.random() * 100}%`],
-            y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`, `${Math.random() * 100}%`],
-            opacity: [Math.random() * 0.5 + 0.3, Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.3],
-          }}
-          transition={{
-            duration: Math.random() * 20 + 20,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-          style={{
-            width: `${Math.random() * 10 + 2}px`,
-            height: `${Math.random() * 10 + 2}px`,
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-// Componente para animar um brilho pulsante
-export const PulsingGlow = ({
-  children,
-  color = "rgba(138, 43, 226, 0.5)",
-  intensity = 20,
-  duration = 3,
-  className = "",
-}: {
-  children: React.ReactNode
-  color?: string
-  intensity?: number
-  duration?: number
-  className?: string
-}) => {
-  return (
-    <motion.div
-      className={`relative ${className}`}
-      animate={{
-        boxShadow: [`0 0 ${intensity}px ${color}`, `0 0 ${intensity * 1.5}px ${color}`, `0 0 ${intensity}px ${color}`],
-      }}
-      transition={{
-        duration,
-        repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
-      }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-// Componente para animar um botão com efeito de hover
-export const AnimatedButton = ({
-  children,
-  onClick,
-  className = "",
-  hoverScale = 1.05,
-  tapScale = 0.95,
-}: {
-  children: React.ReactNode
-  onClick?: () => void
-  className?: string
-  hoverScale?: number
-  tapScale?: number
-}) => {
+// Botão animado com efeitos de hover e tap
+export const AnimatedButton = ({ children, className, onClick, ...props }) => {
   return (
     <motion.button
       className={className}
       onClick={onClick}
-      whileHover={{
-        scale: hoverScale,
-        boxShadow: "0 0 15px rgba(138, 43, 226, 0.7)",
-      }}
-      whileTap={{ scale: tapScale }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      {...props}
     >
       {children}
     </motion.button>
   )
 }
 
-// Componente para animar um card com efeito de hover 3D
-export const AnimatedCard = ({
-  children,
-  className = "",
-  depth = 20,
-}: {
-  children: React.ReactNode
-  className?: string
-  depth?: number
-}) => {
-  const [rotateX, setRotateX] = useState(0)
-  const [rotateY, setRotateY] = useState(0)
-  const [isHovering, setIsHovering] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-
-    const rotateXValue = ((y - centerY) / centerY) * depth * -1
-    const rotateYValue = ((x - centerX) / centerX) * depth
-
-    setRotateX(rotateXValue)
-    setRotateY(rotateYValue)
-  }
-
+// Texto com gradiente animado
+export const GradientText = ({ children, className, colors = ["#FF0080", "#7928CA", "#0070F3"] }) => {
   return (
-    <motion.div
-      ref={cardRef}
-      className={`${className} perspective-1000`}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => {
-        setIsHovering(false)
-        setRotateX(0)
-        setRotateY(0)
+    <motion.h1
+      className={`bg-clip-text text-transparent bg-gradient-to-r ${className}`}
+      style={{
+        backgroundImage: `linear-gradient(to right, ${colors.join(", ")})`,
+        backgroundSize: "200% auto",
       }}
       animate={{
-        rotateX: isHovering ? rotateX : 0,
-        rotateY: isHovering ? rotateY : 0,
-        boxShadow: isHovering
-          ? "0 20px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(138, 43, 226, 0.5)"
-          : "0 10px 20px rgba(0, 0, 0, 0.2)",
+        backgroundPosition: ["0% center", "200% center", "0% center"],
       }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
     >
       {children}
-    </motion.div>
+    </motion.h1>
   )
 }
 
-// Componente para animar um texto com efeito de gradiente
-export const GradientText = ({
-  children,
-  className = "",
-  colors = ["#8A2BE2", "#1E90FF", "#FFD700"],
-  duration = 10,
-}: {
-  children: React.ReactNode
-  className?: string
-  colors?: string[]
-  duration?: number
-}) => {
-  const gradientString = `linear-gradient(to right, ${colors.join(", ")}, ${colors[0]})`
+// Partículas flutuantes
+export const FloatingParticles = ({ count = 20, colors = ["#FFFFFF"] }) => {
+  const [particles, setParticles] = useState([])
+
+  useEffect(() => {
+    const newParticles = []
+    for (let i = 0; i < count; i++) {
+      newParticles.push({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 4 + 1,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        duration: Math.random() * 20 + 10,
+        delay: Math.random() * 5,
+      })
+    }
+    setParticles(newParticles)
+  }, [count, colors])
 
   return (
-    <motion.div
-      className={`${className} bg-clip-text text-transparent bg-gradient-to-r inline-block`}
-      style={{ backgroundImage: gradientString, backgroundSize: "200% 100%" }}
-      animate={{
-        backgroundPosition: ["0% 0%", "100% 0%", "0% 0%"],
-      }}
-      transition={{
-        duration,
-        repeat: Number.POSITIVE_INFINITY,
-        ease: "linear",
-      }}
-    >
-      {children}
-    </motion.div>
+    <>
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute rounded-full"
+          style={{
+            width: particle.size,
+            height: particle.size,
+            backgroundColor: particle.color,
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+          }}
+          animate={{
+            x: [Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50],
+            y: [Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50],
+            opacity: [0.2, 0.8, 0.4, 0.7, 0.2],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Number.POSITIVE_INFINITY,
+            delay: particle.delay,
+            ease: "linear",
+          }}
+        />
+      ))}
+    </>
   )
 }
 

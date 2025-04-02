@@ -9,59 +9,59 @@ import Footer from "@/components/footer"
 import ScrollToTop from "@/components/scroll-to-top"
 import PerformanceToggle from "@/components/performance-toggle"
 import { LanguageProvider } from "@/lib/i18n/language-context"
+import PreSaleBanner from "@/components/pre-sale-banner"
+// Add environment variable check in the main layout
+import { checkRequiredEnvVars } from "@/lib/env-check"
 
-// Otimizar o carregamento da fonte
+// Check environment variables on the server
+// Wrap in try/catch to prevent build failures
+try {
+  if (typeof window === "undefined") {
+    checkRequiredEnvVars()
+  }
+} catch (error) {
+  console.warn("Environment variable check failed:", error)
+}
+
+// Optimize font loading
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap", // Usar font-display: swap para melhorar o CLS
+  display: "swap", // Use font-display: swap to improve CLS
   preload: true,
 })
 
+// Add meta tags for SEO and security
 export const metadata: Metadata = {
-  title: "AirDrop Astral",
-  description: "Sistema de reivindicação de AirDrop com tema astral para distribuição manual de tokens",
-  // Adicionar meta tags para melhorar a performance
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
-  themeColor: "#000000",
-  manifest: "/manifest.json",
+  title: "Anires Token - Airdrop",
+  description: "Participe do airdrop do Anires Token e ajude animais de rua",
+  viewport: "width=device-width, initial-scale=1",
   icons: {
-    icon: [
-      {
-        url: "/anires.png",
-        type: "image/png",
-      },
-    ],
-    apple: [
-      {
-        url: "/anires.png",
-        type: "image/png",
-      },
-    ],
+    icon: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
+  themeColor: "#000000",
     generator: 'v0.dev'
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+// Modify the RootLayout component to include the LanguageProvider
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <head>
-        {/* Adicionar preconnect para domínios externos */}
+        {/* Add preconnect for external domains */}
         <link rel="preconnect" href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com" />
         <link rel="dns-prefetch" href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com" />
         <link rel="preconnect" href="https://v0.blob.com" />
         <link rel="dns-prefetch" href="https://v0.blob.com" />
         <link
           rel="icon"
-          href="/anires.png"
+          href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/anires-5t475e82C0gIE9LYJM8EhAitHkEnag.png"
           type="image/png"
         />
         <link
           rel="apple-touch-icon"
-          href="/anires.png"
+          href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/anires-5t475e82C0gIE9LYJM8EhAitHkEnag.png"
         />
       </head>
       <body className={inter.className}>
@@ -76,6 +76,7 @@ export default function RootLayout({
                   <PerformanceToggle />
                 </div>
                 <Footer />
+                <PreSaleBanner />
               </div>
             </ClientProvider>
           </LanguageProvider>

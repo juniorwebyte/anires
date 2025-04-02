@@ -67,7 +67,7 @@ export async function verifyAirdropTransaction(transactionData: {
     }
 
     // Verificar se o valor está dentro do limite permitido
-    const maxAirdropAmount = 100 // Exemplo de limite
+    const maxAirdropAmount = 1000 // Exemplo de limite
 
     if (transactionData.amount > maxAirdropAmount) {
       warnings.push(`Valor do airdrop excede o limite máximo de ${maxAirdropAmount}`)

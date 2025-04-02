@@ -2,9 +2,14 @@
 
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
+// Adicionar estas importações no topo do arquivo, após as importações existentes
+import { useEffect as useEffectReact } from "react"
+import MemePopup from "@/components/meme-popup"
+import { useToast } from "@/components/ui/use-toast"
+import EasterEggGame from "@/components/easter-egg-game"
 import GalaxyAnimation from "@/components/galaxy-animation"
 import Navbar from "@/components/navbar"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import {
   ArrowDown,
@@ -21,6 +26,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+import { getTotalTokens } from "@/app/actions/token-info"
 
 // Importações para lazy loading
 import dynamic from "next/dynamic"
@@ -111,16 +117,17 @@ const RoadmapItem = ({ phase, title, items, isActive }) => {
       </div>
       <h3 className="text-xl font-semibold mt-3 mb-4 text-blue-300">{title}</h3>
       <ul className="space-y-2">
-        {items.map((item, index) => (
-          <li key={index} className="flex items-start gap-2">
-            <CheckCircle className={`h-5 w-5 mt-0.5 ${isActive ? "text-blue-400" : "text-gray-500"}`} />
-            <span
-              className={`${item === "Concepção da ideia do AniRes" ? "text-blue-200 font-medium" : "text-gray-300"}`}
-            >
-              {item}
-            </span>
-          </li>
-        ))}
+        {Array.isArray(items) &&
+          items.map((item, index) => (
+            <li key={index} className="flex items-start gap-2">
+              <CheckCircle className={`h-5 w-5 mt-0.5 ${isActive ? "text-blue-400" : "text-gray-500"}`} />
+              <span
+                className={`${item === "Concepção da ideia do Street Dog Coin" ? "text-blue-200 font-medium" : "text-gray-300"}`}
+              >
+                {item}
+              </span>
+            </li>
+          ))}
       </ul>
     </div>
   )
@@ -160,10 +167,112 @@ const CryptoSymbol = ({
   )
 }
 
+// Modificar a importação no topo do arquivo para incluir o hook de tradução
+import { useLanguage } from "@/lib/i18n/language-context"
+
+// Importar o componente DebugLanguage para depuração
+import DebugLanguage from "@/components/debug-language"
+
+// Dentro da função Home, adicionar o hook useLanguage
 export default function Home() {
   const router = useRouter()
   const [walletAddress, setWalletAddress] = useState<string>("")
   const [isWalletConnected, setIsWalletConnected] = useState(false)
+  const [totalTokens, setTotalTokens] = useState<number>(0)
+  const { t } = useLanguage() // Adicionar esta linha para obter a função de tradução
+
+  // Dentro da função Home, adicionar estes estados após os estados existentes
+  const [showMemePopup, setShowMemePopup] = useState(false)
+  const [memePopupMessage, setMemePopupMessage] = useState("")
+  const [memePopupVariant, setMemePopupVariant] = useState<"meme" | "crypto" | "party" | "airdrop">("meme")
+  const [showEasterEggGame, setShowEasterEggGame] = useState(false)
+  const [easterEggScore, setEasterEggScore] = useState(0)
+  const [clickCount, setClickCount] = useState(0)
+  const [secretCodeProgress, setSecretCodeProgress] = useState("")
+  const { toast } = useToast()
+
+  // Carregar o valor total de tokens de forma segura
+  useEffect(() => {
+    async function loadTokenInfo() {
+      try {
+        const { totalTokens } = await getTotalTokens()
+        setTotalTokens(totalTokens)
+      } catch (error) {
+        console.error("Erro ao carregar informações de tokens:", error)
+        // Definir um valor padrão em caso de erro
+        setTotalTokens(1000000)
+      }
+    }
+
+    loadTokenInfo()
+  }, [])
+
+  // Adicionar este useEffect após os useEffects existentes
+  useEffectReact(() => {
+    // Mostrar popup humorístico após 30 segundos na página
+    const popupTimer = setTimeout(() => {
+      const messages = [
+        "Sabia que o Burro Astral é o único animal que consegue minerar Bitcoin com as patas?",
+        "Dizem que quando um Burro Astral zurra, o preço das criptomoedas sobe!",
+        "O Burro Astral não vai à lua... a lua que vem até ele!",
+        "Investir em ANIRES é mais seguro que guardar dinheiro embaixo da cama do Burro Astral!",
+        "Por que o Burro Astral atravessou a blockchain? Para chegar ao outro token!",
+      ]
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)]
+      setMemePopupMessage(randomMessage)
+      setMemePopupVariant("crypto")
+      setShowMemePopup(true)
+    }, 30000)
+
+    // Detectar código secreto "ANIRES"
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key.toUpperCase()
+      if ("ANIRES".includes(key)) {
+        setSecretCodeProgress((prev) => {
+          const newProgress = prev + key
+          // Verificar se o código está sendo digitado na ordem correta
+          if ("ANIRES".startsWith(newProgress)) {
+            if (newProgress === "ANIRES") {
+              // Código completo!
+              setShowEasterEggGame(true)
+              toast({
+                title: "🎮 Easter Egg Desbloqueado!",
+                description: "Você encontrou o jogo secreto do Burro Astral!",
+                className: "bg-purple-900 border-purple-600",
+              })
+              return ""
+            }
+            return newProgress
+          }
+          // Se a tecla não seguir a sequência, reiniciar
+          if (key === "A") return "A"
+          return ""
+        })
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      clearTimeout(popupTimer)
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [toast])
+
+  // Função para processar itens de roadmap com segurança
+  const processRoadmapItems = (key: string): string[] => {
+    try {
+      const items = t(key)
+      if (typeof items === "string") {
+        return items.split(",").map((item) => item.trim())
+      }
+      console.warn(`Tradução para "${key}" não é uma string:`, items)
+      return []
+    } catch (error) {
+      console.error(`Erro ao processar itens do roadmap para "${key}":`, error)
+      return []
+    }
+  }
 
   // Função para rolagem suave
   const scrollToSection = (sectionId: string) => {
@@ -178,6 +287,44 @@ export default function Home() {
     router.push("/claim")
   }
 
+  // Adicionar esta função após as funções existentes
+  const handleLogoClick = () => {
+    setClickCount((prev) => {
+      const newCount = prev + 1
+      if (newCount === 5) {
+        // Após 5 cliques no logo, mostrar popup especial
+        setMemePopupMessage(
+          "Você descobriu o segredo do Burro Astral! Continue clicando em elementos da página para mais surpresas!",
+        )
+        setMemePopupVariant("party")
+        setShowMemePopup(true)
+        return 0
+      }
+      return newCount
+    })
+  }
+
+  // Adicionar esta função após as funções existentes
+  const handleEasterEggComplete = (score: number) => {
+    setEasterEggScore(score)
+    setShowEasterEggGame(false)
+
+    // Recompensar o jogador com base na pontuação
+    if (score > 10) {
+      toast({
+        title: "🏆 Pontuação Incrível!",
+        description: `Você conseguiu ${score} pontos! O Burro Astral está orgulhoso!`,
+        className: "bg-gradient-to-r from-yellow-600 to-purple-600",
+      })
+    } else {
+      toast({
+        title: "🎮 Boa tentativa!",
+        description: `Você conseguiu ${score} pontos. Tente novamente para superar seu recorde!`,
+        className: "bg-blue-900 border-blue-600",
+      })
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col bg-black text-white relative overflow-hidden">
       <GalaxyAnimation />
@@ -185,38 +332,60 @@ export default function Home() {
 
       {/* 1. Hero Section */}
       <section id="hero" className="relative pt-20 pb-16 md:pt-32 md:pb-24 fade-in">
+        {/* Dica de Easter Egg */}
+        <div className="container mx-auto px-4 text-center">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, repeatDelay: 20 }}
+            className="text-blue-400/60 text-xs italic"
+          >
+            Psiu! Digite A-N-I-R-E-S para uma surpresa especial...
+          </motion.p>
+        </div>
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="flex-1 text-center lg:text-left z-10">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
                 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600"
               >
-                AniRes
+                {t("home.hero.title")}
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 80 }}
                 className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl"
               >
-                O Futuro dos Animais Está em Suas Mãos. Tecnologia blockchain unida à compaixão. 
-                AniRes é mais do que um projeto, é uma revolução astral! Resgatamos, cuidamos e garantimos um destino digno para cada animal abandonado.
+                {t("home.hero.subtitle")}
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 120 }}
                 className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               >
+                <a href="https://presale.anires.org/" target="_blank" rel="noopener noreferrer">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-yellow-500 to-red-500 hover:from-yellow-600 hover:to-red-600 text-white px-8 hover:scale-110 transition-transform shadow-lg shadow-red-500/30 animate-pulse-slow relative overflow-hidden group"
+                  >
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-yellow-400 to-red-400 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
+                    <span className="relative flex items-center">
+                      <Coins className="mr-2 h-5 w-5" />
+                      {t("home.hero.buyButton") || "COMPRAR AGORA"}
+                    </span>
+                  </Button>
+                </a>
                 <Link href="/claim">
                   <Button
                     size="lg"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-8 hover:scale-105 transition-transform"
                   >
-                    Participar do Airdrop
+                    {t("home.hero.airdropButton")}
                   </Button>
                 </Link>
                 <Button
@@ -225,7 +394,7 @@ export default function Home() {
                   className="border-blue-600 text-blue-400 hover:bg-blue-900/20 hover:scale-105 transition-transform"
                   onClick={() => scrollToSection("about")}
                 >
-                  Saiba Mais
+                  {t("home.hero.learnMoreButton")}
                 </Button>
               </motion.div>
 
@@ -233,7 +402,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
+                transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 90 }}
                 className="mt-8"
               >
                 <CountdownTimer />
@@ -244,11 +413,16 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
               className="flex-1 relative"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] mx-auto animate-float">
+              <div
+                className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] mx-auto animate-float"
+                onClick={handleLogoClick}
+              >
                 <Image
-                  src="/anires.png"
-                  alt="AniRes Logo"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/anires-5t475e82C0gIE9LYJM8EhAitHkEnag.png"
+                  alt="Anires Logo"
                   width={400}
                   height={400}
                   className="rounded-full animate-glow"
@@ -365,10 +539,10 @@ export default function Home() {
             className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-2xl p-8 border border-blue-800/30 backdrop-blur-sm"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <StatCounter value={10000} label="Participantes" />
-              <StatCounter value={100} label="$ANIRES por Airdrop" />
-              <StatCounter value={5} label="Tarefas Simples" />
-              <StatCounter value={4} label="Parceiros Cripto" />
+              <StatCounter value={10000} label={t("home.stats.participants")} />
+              <StatCounter value={100} label={t("home.stats.tokensPerAirdrop")} />
+              <StatCounter value={5} label={t("home.stats.simpleTasks")} />
+              <StatCounter value={10} label={t("home.stats.ngosBenefited")} />
             </div>
           </motion.div>
         </div>
@@ -386,8 +560,8 @@ export default function Home() {
               className="flex-1"
             >
               <Image
-                src="/mascote.jpg"
-                alt="AniRes Mascot"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/mascote.jpg-gQe3rOJGHCTIOITM0ffjL4dxDyvaen.jpeg"
+                alt="Anires Mascot"
                 width={500}
                 height={500}
                 className="rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-500"
@@ -401,28 +575,19 @@ export default function Home() {
               viewport={{ once: true }}
               className="flex-1"
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">Conheça o AniRes</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">{t("home.about.title")}</h2>
               <p className="text-gray-300 text-lg mb-6">
-              A Nova Era do Resgate Animal. Os sistemas falharam. As promessas foram quebradas. 
-              Mas não esperamos mais! Anires nasceu para garantir que todo animal abandonado tenha abrigo, comida e dignidade, sem depender de políticos ou instituições falsas. 
-              Nossa estrutura incluirá um abrigo para resgatar e cuidar de animais, uma fábrica de alimentos para garantir nutrição contínua e um centro de adoção onde cada animal poderá encontrar um lar. 
-              Com o ANIRES CASH, você se torna parte dessa transformação real e transparente sem intermediários!
+                {t("home.about.subtitle")} {t("home.about.paragraph")}
               </p>
               <div className="space-y-4">
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4"
-                >
-                  <h4 className="font-semibold text-blue-300 mb-2">Tokenomics Transparentes</h4>
-                  <p className="text-gray-400">2% de cada transação é destinado ao fundo de auxílio aos cães de rua</p>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4"
-                >
-                  <h4 className="font-semibold text-blue-300 mb-2">Airdrop em Andamento</h4>
-                  <p className="text-gray-400">Participe agora e receba 100 $ANIRES tokens gratuitamente</p>
-                </motion.div>
+                <div className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4 transition-all duration-300 hover:bg-blue-900/30 hover:border-blue-700/40">
+                  <h4 className="font-semibold text-blue-300 mb-2">{t("home.about.transparentTokenomics")}</h4>
+                  <p className="text-gray-400">{t("home.about.transparentTokenomicsDesc")}</p>
+                </div>
+                <div className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4 transition-all duration-300 hover:bg-blue-900/30 hover:border-blue-700/40">
+                  <h4 className="font-semibold text-blue-300 mb-2">{t("home.about.ongoingAirdrop")}</h4>
+                  <p className="text-gray-400">{t("home.about.ongoingAirdropDesc")}</p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -440,7 +605,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-3xl md:text-4xl font-bold mb-4 text-blue-400"
             >
-              Por que a AniRes?
+              {t("home.features.title")}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -449,8 +614,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-gray-300 max-w-2xl mx-auto"
             >
-              Combinamos tecnologia blockchain com impacto social para criar um ecossistema que beneficia tanto
-              investidores quanto cães de rua.
+              {t("home.features.subtitle")}
             </motion.p>
           </div>
 
@@ -463,13 +627,11 @@ export default function Home() {
               whileHover={{ y: -10, boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)" }}
               className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-800/30 backdrop-blur-sm"
             >
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 animate-pulse-slow">
                 <Heart className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-300">Impacto Social</h3>
-              <p className="text-gray-400">
-                Parte dos tokens é destinada a ONGs e abrigos que cuidam de cães de rua, gerando impacto social real.
-              </p>
+              <h3 className="text-xl font-semibold mb-2 text-blue-300">{t("home.features.socialImpact")}</h3>
+              <p className="text-gray-400">{t("home.features.socialImpactDesc")}</p>
             </motion.div>
 
             <motion.div
@@ -480,13 +642,11 @@ export default function Home() {
               whileHover={{ y: -10, boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)" }}
               className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-800/30 backdrop-blur-sm"
             >
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 animate-pulse-slow">
                 <Coins className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-300">Tokenomics</h3>
-              <p className="text-gray-400">
-                Sistema econômico transparente e sustentável, com mecanismos de queima e redistribuição.
-              </p>
+              <h3 className="text-xl font-semibold mb-2 text-blue-300">{t("home.features.tokenomics")}</h3>
+              <p className="text-gray-400">{t("home.features.tokenomicsDesc")}</p>
             </motion.div>
 
             <motion.div
@@ -497,13 +657,11 @@ export default function Home() {
               whileHover={{ y: -10, boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)" }}
               className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-800/30 backdrop-blur-sm"
             >
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 animate-pulse-slow">
                 <Globe2 className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-300">Comunidade Global</h3>
-              <p className="text-gray-400">
-                Uma comunidade ativa e engajada, unida pela causa dos cães de rua em todo o mundo.
-              </p>
+              <h3 className="text-xl font-semibold mb-2 text-blue-300">{t("home.features.globalCommunity")}</h3>
+              <p className="text-gray-400">{t("home.features.globalCommunityDesc")}</p>
             </motion.div>
           </div>
         </div>
@@ -521,8 +679,8 @@ export default function Home() {
               className="flex-1"
             >
               <Image
-                src="/banner.jpg"
-                alt="AniRes Banner"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/banner.jpg-suY3E7tuo3epVJqlAEWq5RFzUZHwjR.jpeg"
+                alt="Anires Banner"
                 width={600}
                 height={600}
                 className="rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-500"
@@ -536,30 +694,24 @@ export default function Home() {
               viewport={{ once: true }}
               className="flex-1"
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">
-                Junte-se à Revolução AniRes
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-400">{t("home.mission.title")}</h2>
               <div className="space-y-4">
                 <motion.div whileHover={{ x: 5 }} className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mt-1">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mt-1 animate-pulse-slow">
                     <DogIcon className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2 text-blue-300">Ajuda Real</h3>
-                    <p className="text-gray-400">
-                      Cada transação contribui para o fundo de auxílio aos cães de rua, garantindo impacto direto.
-                    </p>
+                    <h3 className="text-xl font-semibold mb-2 text-blue-300">{t("home.mission.realHelp")}</h3>
+                    <p className="text-gray-400">{t("home.mission.realHelpDesc")}</p>
                   </div>
                 </motion.div>
                 <motion.div whileHover={{ x: 5 }} className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mt-1">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mt-1 animate-pulse-slow">
                     <Users className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2 text-blue-300">Comunidade Engajada</h3>
-                    <p className="text-gray-400">
-                      Faça parte de uma comunidade que compartilha o amor pelos animais e a paixão por criptomoedas.
-                    </p>
+                    <h3 className="text-xl font-semibold mb-2 text-blue-300">{t("home.mission.engagedCommunity")}</h3>
+                    <p className="text-gray-400">{t("home.mission.engagedCommunityDesc")}</p>
                   </div>
                 </motion.div>
               </div>
@@ -578,16 +730,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">Tokenomics</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto mb-4">
-              Distribuição transparente e sustentável do AniRes
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">{t("home.tokenomics.title")}</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto mb-4">{t("home.tokenomics.subtitle")}</p>
             <Link href="/tokenomics">
               <Button
                 variant="outline"
                 className="border-blue-600 text-blue-400 hover:bg-blue-900/20 hover:scale-105 transition-transform mt-2"
               >
-                Ver Tokenomics Completo
+                {t("home.tokenomics.viewFullButton")}
               </Button>
             </Link>
           </motion.div>
@@ -600,10 +750,10 @@ export default function Home() {
               viewport={{ once: true }}
               className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-800/30 backdrop-blur-sm"
             >
-              <h3 className="text-2xl font-semibold mb-6 text-blue-300">Distribuição de Tokens</h3>
+              <h3 className="text-2xl font-semibold mb-6 text-blue-300">{t("home.tokenomics.distribution")}</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Venda Pública e AirDrop</span>
+                  <span className="text-gray-300">{t("home.tokenomics.publicSale")}</span>
                   <span className="text-blue-400 font-medium">40%</span>
                 </div>
                 <div className="w-full bg-blue-900/30 rounded-full h-4">
@@ -611,7 +761,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
-                  <span className="text-gray-300">Recompensas e Incentivas</span>
+                  <span className="text-gray-300">{t("home.tokenomics.rewards")}</span>
                   <span className="text-blue-400 font-medium">20%</span>
                 </div>
                 <div className="w-full bg-blue-900/30 rounded-full h-4">
@@ -619,7 +769,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
-                  <span className="text-gray-300">Reserva para Construção da Fábrica</span>
+                  <span className="text-gray-300">{t("home.tokenomics.factoryReserve")}</span>
                   <span className="text-blue-400 font-medium">20%</span>
                 </div>
                 <div className="w-full bg-blue-900/30 rounded-full h-4">
@@ -627,7 +777,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
-                  <span className="text-gray-300">Parcerias e Doações</span>
+                  <span className="text-gray-300">{t("home.tokenomics.partnerships")}</span>
                   <span className="text-blue-400 font-medium">10%</span>
                 </div>
                 <div className="w-full bg-blue-900/30 rounded-full h-4">
@@ -635,7 +785,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
-                  <span className="text-gray-300">Equipe e Operações</span>
+                  <span className="text-gray-300">{t("home.tokenomics.teamOperations")}</span>
                   <span className="text-blue-400 font-medium">10%</span>
                 </div>
                 <div className="w-full bg-blue-900/30 rounded-full h-4">
@@ -651,15 +801,15 @@ export default function Home() {
               viewport={{ once: true }}
               className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6 rounded-xl border border-blue-800/30 backdrop-blur-sm"
             >
-              <h3 className="text-2xl font-semibold mb-6 text-blue-300">Detalhes do Token</h3>
+              <h3 className="text-2xl font-semibold mb-6 text-blue-300">{t("home.tokenomics.tokenDetails")}</h3>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mt-1">
                     <Coins className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-blue-300">Fornecimento Total</h4>
-                    <p className="text-gray-400">5.000.000.000 $ANIRES</p>
+                    <h4 className="text-lg font-medium text-blue-300">{t("home.tokenomics.totalSupply")}</h4>
+                    <p className="text-gray-400">{t("home.tokenomics.totalSupplyValue")}</p>
                   </div>
                 </div>
 
@@ -668,11 +818,8 @@ export default function Home() {
                     <Award className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-blue-300">Recompensas</h4>
-                    <p className="text-gray-400">
-                      Ao adquirir ANIRES na página oficial, você recebe bônus exclusivos de até 20%! Quanto antes
-                      participar, maior a sua recompensa.
-                    </p>
+                    <h4 className="text-lg font-medium text-blue-300">{t("home.tokenomics.rewardsTitle")}</h4>
+                    <p className="text-gray-400">{t("home.tokenomics.rewardsDesc")}</p>
                   </div>
                 </div>
               </div>
@@ -691,16 +838,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">Roadmap</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto mb-6">
-              Nossa jornada para criar impacto e valor através do AniRes
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">{t("home.roadmap.title")}</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto mb-6">{t("home.roadmap.subtitle")}</p>
             <Link href="/roadmap">
               <Button
                 variant="outline"
                 className="border-blue-600 text-blue-400 hover:bg-blue-900/20 hover:scale-105 transition-transform"
               >
-                Ver Roadmap Completo
+                {t("home.roadmap.viewFullButton")}
               </Button>
             </Link>
           </motion.div>
@@ -713,15 +858,9 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <RoadmapItem
-                phase="Fase 0"
-                title="Concepção"
-                items={[
-                  "Concepção da ideia do AniRes",
-                  "Planejamento estratégico inicial",
-                  "Primeiro post oficial no Facebook",
-                  "Estabelecimento da presença inicial nas redes sociais",
-                  "Início do desenvolvimento do Whitepaper",
-                ]}
+                phase={t("home.roadmap.phaseZero")}
+                title={t("home.roadmap.phaseZeroTitle")}
+                items={processRoadmapItems("home.roadmap.phaseZeroItems")}
                 isActive={true}
               />
             </motion.div>
@@ -733,14 +872,9 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <RoadmapItem
-                phase="Fase 1"
-                title="Estudos e Viabilidade"
-                items={[
-                  "Desenvolvimento e auditoria do contrato inteligente",
-                  "Pesquisa para construção da fábrica de ração",
-                  "Planejamento do abrigo para cães de rua",
-                  "Lançamento do website e redes sociais",
-                ]}
+                phase={t("home.roadmap.phaseOne")}
+                title={t("home.roadmap.phaseOneTitle")}
+                items={processRoadmapItems("home.roadmap.phaseOneItems")}
                 isActive={false}
               />
             </motion.div>
@@ -752,15 +886,9 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <RoadmapItem
-                phase="Fase 2"
-                title="Lançamento"
-                items={[
-                  "Lançamento oficial do token ANIRES",
-                  "Início da distribuição do Airdrop",
-                  "Listagem em exchanges descentralizadas",
-                  "Listagem em exchanges centralizadas",
-                  "Implementação do sistema de staking",
-                ]}
+                phase={t("home.roadmap.phaseTwo")}
+                title={t("home.roadmap.phaseTwoTitle")}
+                items={processRoadmapItems("home.roadmap.phaseZeroItems")}
                 isActive={false}
               />
             </motion.div>
@@ -778,31 +906,16 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">Perguntas Frequentes</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">Tudo o que você precisa saber sobre o AniRes</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-400">{t("home.faq.title")}</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">{t("home.faq.subtitle")}</p>
           </motion.div>
 
           <div className="max-w-3xl mx-auto">
-            <FAQItem
-              question="O que é o AniRes?"
-              answer="O ANIRES é um token criado para unir tecnologia e impacto social, ajudando cães de rua por meio da construção de um abrigo e uma fábrica de ração. No futuro, ele impulsionará um ecossistema com marketplace pet, NFTs solidários e um sistema de doações transparentes."
-            />
-            <FAQItem
-              question="Como funciona o airdrop?"
-              answer="Para participar do airdrop, você precisa completar algumas tarefas simples como seguir nossas redes sociais, entrar no grupo do Telegram e compartilhar o projeto. Após a verificação, você receberá 100 $ANIRES tokens gratuitamente."
-            />
-            <FAQItem
-              question="Como funciona a listagem do ANIRES e por que é uma grande oportunidade?"
-              answer="A listagem do ANIRES foi estrategicamente planejada para garantir valorização e crescimento sustentável. Comprando diretamente pelo site oficial, os investidores aproveitam benefícios exclusivos, incluindo recompensas progressivas de até 20%. Além disso, com a futura integração em exchanges e adoção no marketplace pet, o ANIRES tem tudo para se tornar um sucesso absoluto no mercado cripto!"
-            />
-            <FAQItem
-              question="Como o projeto ajuda os cães de rua?"
-              answer="O AniRes foi criado para gerar impacto real na vida dos animais. Parte dos recursos do projeto será destinada à construção de uma fábrica de ração e um abrigo para cães resgatados. Além disso, o ecossistema do ANIRES inclui um sistema de doações transparentes, NFTs solidários e parcerias com ONGs para ampliar o suporte aos animais que mais precisam."
-            />
-            <FAQItem
-              question="Posso participar do projeto de outras formas?"
-              answer="Sim! Além de adquirir tokens, você pode se tornar um embaixador do projeto, ajudar na divulgação, sugerir ONGs para parcerias ou até mesmo contribuir com suas habilidades para o crescimento do ecossistema. Junte-se a nós e faça parte de uma revolução que une tecnologia e impacto social, ajudando a transformar a vida de milhares de cães de rua. Seu apoio pode fazer toda a diferença!"
-            />
+            <FAQItem question={t("home.faq.whatIs.question")} answer={t("home.faq.whatIs.answer")} />
+            <FAQItem question={t("home.faq.airdrop.question")} answer={t("home.faq.airdrop.answer")} />
+            <FAQItem question={t("home.faq.listing.question")} answer={t("home.faq.listing.answer")} />
+            <FAQItem question={t("home.faq.helping.question")} answer={t("home.faq.helping.answer")} />
+            <FAQItem question={t("home.faq.participation.question")} answer={t("home.faq.participation.answer")} />
           </div>
         </div>
       </section>
@@ -819,17 +932,25 @@ export default function Home() {
             className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-2xl p-8 md:p-12 border border-blue-800/30 backdrop-blur-sm"
           >
             <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-300">
-                Pronto para fazer parte desta revolução?
-              </h2>
-              <p className="text-gray-300 text-lg mb-8">
-                Não perca a oportunidade de participar do airdrop do AniRes e fazer parte de uma comunidade que
-                está mudando o mundo dos cães de rua.
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-blue-300">{t("home.cta.title")}</h2>
+              <p className="text-gray-300 text-lg mb-8">{t("home.cta.subtitle")}</p>
               <Link href="/claim">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8">
-                    Participar do Airdrop
+                  <Button
+                    size="lg"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                    onClick={(e) => {
+                      // 10% de chance de ativar o easter egg
+                      if (Math.random() < 0.1) {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setMemePopupMessage("Você encontrou o botão secreto do Burro Astral! Parabéns pela sua sorte!")
+                        setMemePopupVariant("airdrop")
+                        setShowMemePopup(true)
+                      }
+                    }}
+                  >
+                    {t("home.cta.button")}
                   </Button>
                 </motion.div>
               </Link>
@@ -838,8 +959,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pop-up humorístico */}
+      <MemePopup
+        isOpen={showMemePopup}
+        onClose={() => setShowMemePopup(false)}
+        message={memePopupMessage}
+        variant={memePopupVariant}
+        title="Burro Astral diz:"
+        showMascot={true}
+        mascotVariant="dancing"
+        autoClose={true}
+        autoCloseTime={8000}
+      />
+
+      {/* Easter Egg Game */}
+      {showEasterEggGame && (
+        <EasterEggGame onComplete={handleEasterEggComplete} onClose={() => setShowEasterEggGame(false)} />
+      )}
+
       <Toaster />
       <PerformanceToggle />
+
+      {/* Adicionar o componente DebugLanguage */}
+      {process.env.NODE_ENV !== "production" && <DebugLanguage />}
     </main>
   )
 }

@@ -1,36 +1,25 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import dynamic from "next/dynamic"
-
-// Loading component to show while AirdropClaim is loading
-const LoadingComponent = () => (
-  <div className="w-full space-y-6">
-    <div className="h-64 w-full animate-pulse bg-purple-900/20 rounded-lg"></div>
-    <div className="h-96 w-full animate-pulse bg-purple-900/20 rounded-lg"></div>
-  </div>
-)
+import AirdropClaim from "@/components/airdrop-claim"
 
 interface LazyAirdropClaimProps {
-  onWalletUpdate?: (address: string | null, connected: boolean) => void
+  onWalletUpdate: (address: string | null, connected: boolean) => void
 }
 
-// Dynamically import AirdropClaim with ssr: false
-const AirdropClaim = dynamic(() => import("@/components/airdrop-claim"), {
-  loading: () => <LoadingComponent />,
-  ssr: false,
-})
-
 export default function LazyAirdropClaim({ onWalletUpdate }: LazyAirdropClaimProps) {
-  const [isMounted, setIsMounted] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
-  // Ensure component is only rendered client-side
   useEffect(() => {
-    setIsMounted(true)
+    setIsClient(true)
   }, [])
 
-  if (!isMounted) {
-    return <LoadingComponent />
+  if (!isClient) {
+    return (
+      <div className="w-full h-[500px] flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-t-purple-500 border-b-transparent border-l-transparent border-r-transparent rounded-full animate-spin"></div>
+      </div>
+    )
   }
 
   return <AirdropClaim onWalletUpdate={onWalletUpdate} />

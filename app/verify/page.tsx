@@ -5,10 +5,11 @@ import GalaxyAnimation from "@/components/galaxy-animation"
 import Navbar from "@/components/navbar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle2, AlertCircle, Search, Loader2 } from "lucide-react"
+import { CheckCircle2, AlertCircle, Search, Loader2, Stars } from "lucide-react"
 import PerformanceToggle from "@/components/performance-toggle"
 import { getClaimByWalletAddress } from "@/lib/storage-service"
 import { useToast } from "@/components/ui/use-toast"
+import { motion } from "framer-motion"
 
 export default function VerifyPage() {
   const { toast } = useToast()
@@ -64,14 +65,42 @@ export default function VerifyPage() {
       <Navbar isWalletConnected={isWalletConnected} walletAddress={walletAddress} />
 
       <div className="max-w-3xl w-full z-10 mt-20">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 text-purple-400">Verificar Elegibilidade</h1>
-          <p className="text-gray-300">Verifique se seu endereço é elegível para o AirDrop</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600">
+            Verificar Elegibilidade
+          </h1>
+          <p className="text-gray-300">Verifique se seu endereço é elegível para o Airdrop Astral</p>
+
+          {/* Astral theme decorative elements */}
+          <div className="relative h-8 mt-4">
+            <motion.div
+              className="absolute left-1/2 transform -translate-x-1/2 text-purple-400 text-2xl"
+              animate={{
+                y: [0, -5, 0],
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+              }}
+            >
+              ✧ ⋆ ˚ ⋆ ✧ ⋆ ˚
+            </motion.div>
+          </div>
+        </motion.div>
 
         <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
           <CardHeader className="border-b border-purple-900/20 bg-black/50">
-            <CardTitle className="text-xl text-purple-400">Verificar Endereço</CardTitle>
+            <div className="flex items-center">
+              <Stars className="h-5 w-5 text-purple-400 mr-2" />
+              <CardTitle className="text-xl text-purple-400">Verificar Endereço</CardTitle>
+            </div>
             <CardDescription className="text-gray-400">
               Insira o endereço da carteira para verificar a elegibilidade
             </CardDescription>
@@ -107,7 +136,7 @@ export default function VerifyPage() {
                   <div>
                     <h4 className="font-medium text-green-400">Endereço Elegível!</h4>
                     <p className="text-sm text-gray-300 mt-1">
-                      Este endereço está elegível para receber {claimDetails?.tokensRequested || 100} $ANIRES tokens.
+                      Este endereço está elegível para receber {claimDetails?.tokensRequested || 1000} $ANIRES tokens.
                     </p>
                     {claimDetails?.status === "processed" && (
                       <p className="text-sm text-green-300 mt-2">
@@ -127,8 +156,8 @@ export default function VerifyPage() {
                   <div>
                     <h4 className="font-medium text-red-400">Endereço Não Elegível</h4>
                     <p className="text-sm text-gray-300 mt-1">
-                      Este endereço não está na lista de distribuição do AirDrop. Você pode participar completando as
-                      tarefas na página de reivindicação.
+                      Este endereço não está na lista de distribuição do Airdrop Astral. Você pode participar
+                      completando as tarefas na página de reivindicação.
                     </p>
                     <Button
                       className="mt-3 bg-purple-600 hover:bg-purple-700"
@@ -151,6 +180,18 @@ export default function VerifyPage() {
                   reivindicação
                 </p>
               </div>
+
+              {/* Astral theme decorative elements */}
+              <motion.div
+                className="relative h-8 mt-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+              >
+                <div className="flex justify-center space-x-2 text-purple-400/60 text-xs">
+                  ✧ ⋆ ˚ ⋆ ✧ ⋆ ˚ ⋆ ✧ ⋆ ˚ ⋆ ✧ ⋆ ˚ ⋆ ✧
+                </div>
+              </motion.div>
             </div>
           </CardContent>
         </Card>

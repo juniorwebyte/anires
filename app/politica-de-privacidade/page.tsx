@@ -37,8 +37,8 @@ export default function PoliticaDePrivacidadePage() {
             <div className="prose prose-invert max-w-none">
               <h2 className="text-2xl font-bold text-blue-400">1. Introdução</h2>
               <p>
-                O AniRes ("nós", "nosso" ou "nos") está comprometido em proteger sua privacidade. Esta Política
-                de Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações pessoais quando
+                O AniRes ("nós", "nosso" ou "nos") está comprometido em proteger sua privacidade. Esta Política de
+                Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações pessoais quando
                 você usa nosso site e serviços.
               </p>
               <p>

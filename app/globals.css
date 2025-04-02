@@ -1,3 +1,5 @@
+/* Add astral theme specific styles to globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -50,10 +52,10 @@
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
 }
 
@@ -61,21 +63,21 @@
 @keyframes glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
   }
   50% {
-    filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.7));
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
   }
 }
 
 /* Adicionar will-change para melhorar a performance das animações */
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 6s infinite ease-in-out;
   will-change: transform;
 }
 
 .animate-glow {
-  animation: glow 3s ease-in-out infinite;
+  animation: glow 4s infinite ease-in-out;
   will-change: filter;
 }
 
@@ -104,7 +106,9 @@
 /* Adicionar classe para dispositivos de baixa performance */
 .low-perf-mode .nebula,
 .low-perf-mode .planet,
-.low-perf-mode .shooting-star {
+.low-perf-mode .shooting-star,
+.low-perf-mode .constellation,
+.low-perf-mode .zodiac-symbol {
   display: none !important;
 }
 
@@ -112,7 +116,7 @@
   animation: none !important;
 }
 
-/* Estilos adicionais para o tema galáctico */
+/* Estilos adicionais para o tema astral */
 .stars-container {
   position: absolute;
   width: 100%;
@@ -144,6 +148,39 @@
   height: 1px;
   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
   transform-origin: left;
+}
+
+/* Novos estilos para o tema astral */
+.constellation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.constellation-line {
+  position: absolute;
+  background-color: rgba(147, 197, 253, 0.3);
+  height: 1px;
+  transform-origin: left center;
+}
+
+.constellation-star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.zodiac-symbol {
+  position: absolute;
+  font-size: 1.5rem;
+  color: rgba(168, 85, 247, 0.4);
+}
+
+.astral-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 /* Adicionar animações de carregamento e transição */
@@ -196,11 +233,11 @@
 
 /* Animação de órbita para símbolos de criptomoedas */
 @keyframes orbit {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg) translateX(150px) rotate(0deg);
+  from {
+    transform: rotate(0deg) translateX(150px) rotate(0deg);
   }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg) translateX(150px) rotate(-360deg);
+  to {
+    transform: rotate(360deg) translateX(150px) rotate(-360deg);
   }
 }
 
@@ -220,15 +257,15 @@
 @keyframes pulse {
   0%,
   100% {
-    transform: scale(1);
+    opacity: 1;
   }
   50% {
-    transform: scale(1.05);
+    opacity: 0.5;
   }
 }
 
 .animate-pulse-slow {
-  animation: pulse 3s ease-in-out infinite, glow-symbol 4s ease-in-out infinite;
+  animation: pulse 3s infinite ease-in-out;
 }
 
 /* Animação de gradiente para fundos */
@@ -245,7 +282,6 @@
 }
 
 .animate-gradient {
-  background-size: 200% 200%;
   animation: gradient 15s ease infinite;
 }
 
@@ -258,5 +294,615 @@
   50% {
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
   }
+}
+
+/* Animação de rotação para elementos astrais */
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-slow {
+  animation: rotate-slow 120s linear infinite;
+}
+
+.rotate-slow-reverse {
+  animation: rotate-slow 120s linear infinite reverse;
+}
+
+/* Efeito de brilho para elementos astrais */
+@keyframes astral-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.astral-glow {
+  animation: astral-glow 4s ease-in-out infinite;
+}
+
+/* Estilo para texto com efeito de brilho astral */
+.astral-text {
+  color: #a78bfa;
+  text-shadow: 0 0 5px #a78bfa, 0 0 10px #a78bfa;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Classe para texto com efeito arco-íris */
+.rainbow-text {
+  background-image: linear-gradient(to right, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #8000ff, #ff0080);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Efeito de brilho para elementos */
+@keyframes glow-effect {
+  from {
+    box-shadow: 0 0 10px -10px rgba(138, 43, 226, 0.8);
+  }
+  to {
+    box-shadow: 0 0 20px 10px rgba(138, 43, 226, 0.8);
+  }
+}
+
+/* Animação de pulso lenta */
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+.astral-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600;
+}
+
+/* Adicionar estilos para o modo de performance */
+.performance-mode .stars-container,
+.performance-mode .galaxy-animation,
+.performance-mode .animate-float,
+.performance-mode .animate-pulse,
+.performance-mode .animate-glow {
+  animation: none !important;
+}
+
+.performance-mode .crypto-symbol {
+  display: none !important;
+}
+
+/* Estilos para os efeitos especiais */
+
+/* Efeito de terremoto */
+@keyframes earthquake {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+  10% {
+    transform: translate(-5px, -5px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(5px, -5px) rotate(1deg);
+  }
+  30% {
+    transform: translate(-5px, 5px) rotate(0);
+  }
+  40% {
+    transform: translate(5px, 5px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-5px, -5px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(5px, -5px) rotate(0);
+  }
+  70% {
+    transform: translate(-5px, 5px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-5px, -5px) rotate(1deg);
+  }
+  90% {
+    transform: translate(5px, 5px) rotate(0);
+  }
+}
+
+.earthquake-effect {
+  animation: earthquake 0.5s infinite;
+}
+
+/* Efeito de arco-íris */
+@keyframes rainbow-move {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Efeito de burros caindo */
+@keyframes burro-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 100px)) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+.burro-falling {
+  position: absolute;
+  animation: burro-fall linear forwards;
+}
+
+/* Efeito de ciclo de cores */
+@keyframes color-cycle {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.color-cycle-effect {
+  animation: color-cycle 3s linear infinite;
+}
+
+/* Efeito de glitch */
+@keyframes glitch-anim {
+  0% {
+    clip-path: inset(40% 0 61% 0);
+    transform: translate(-10px, 10px);
+  }
+  20% {
+    clip-path: inset(92% 0 1% 0);
+    transform: translate(10px, -10px);
+  }
+  40% {
+    clip-path: inset(43% 0 1% 0);
+    transform: translate(-10px, -10px);
+  }
+  60% {
+    clip-path: inset(25% 0 58% 0);
+    transform: translate(10px, 10px);
+  }
+  80% {
+    clip-path: inset(54% 0 7% 0);
+    transform: translate(-10px, 10px);
+  }
+  100% {
+    clip-path: inset(58% 0 43% 0);
+    transform: translate(10px, -10px);
+  }
+}
+
+.glitch-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.glitch-element {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.2);
+  mix-blend-mode: overlay;
+  animation: glitch-anim 0.2s infinite alternate-reverse;
+}
+
+/* Efeito de discoteca */
+@keyframes disco-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+.disco-light {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(20px);
+  mix-blend-mode: screen;
+  animation: disco-pulse infinite both;
+}
+
+/* Efeito de explosão */
+@keyframes explosion {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.explosion-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 255, 0, 1) 0%, rgba(255, 0, 0, 1) 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: explosion 1s forwards;
+}
+
+/* Adicionar novas animações para os easter eggs e melhorias visuais */
+@keyframes float-up {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(150px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(150px) rotate(-360deg);
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-glow {
+  animation: glow 4s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
+  }
+}
+
+/* Efeito de terremoto para o easter egg */
+.earthquake-effect {
+  animation: earthquake 0.5s ease-in-out infinite;
+}
+
+@keyframes earthquake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+/* Efeito de arco-íris para o easter egg */
+@keyframes rainbow-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.rainbow-overlay {
+  background-size: 200% 200%;
+}
+
+/* Efeito de ciclo de cores para o easter egg */
+.color-cycle-effect {
+  animation: color-cycle 5s linear infinite;
+}
+
+@keyframes color-cycle {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Efeito de glitch para o easter egg */
+.glitch-effect {
+  animation: glitch 0.3s linear infinite;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch-element {
+  position: absolute;
+  background-color: rgba(0, 255, 255, 0.3);
+  animation: glitch-move 0.5s linear infinite;
+}
+
+@keyframes glitch-move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(10px);
+  }
+}
+
+/* Efeito de discoteca para o easter egg */
+.disco-light {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.5;
+  animation: disco-pulse 2s ease-in-out infinite;
+}
+
+@keyframes disco-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.7;
+  }
+}
+
+/* Animação para o burro caindo */
+.burro-falling {
+  animation: falling 3s linear forwards;
+}
+
+@keyframes falling {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(120vh) rotate(360deg);
+  }
+}
+
+/* Animações para o banner de pré-venda */
+@keyframes float-particle {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px);
+  }
+  50% {
+    transform: translateY(-5px) translateX(10px);
+  }
+  75% {
+    transform: translateY(5px) translateX(5px);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes pulse-fast {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.animate-float-particle {
+  animation: float-particle 3s infinite ease-in-out;
+}
+
+.animate-float-up {
+  animation: float-up 2s forwards ease-out;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s infinite ease-in-out;
+}
+
+.animate-pulse-fast {
+  animation: pulse-fast 1.5s infinite ease-in-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s infinite ease-in-out;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
+}
+
+.animate-shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 

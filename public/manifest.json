@@ -1,14 +1,14 @@
 {
-  "name": "AniRes",
+  "name": "Anires",
   "short_name": "ANIRES",
   "icons": [
     {
-      "src": "/anires.png",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/anires-5t475e82C0gIE9LYJM8EhAitHkEnag.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/anires.png",
+      "src": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/anires-5t475e82C0gIE9LYJM8EhAitHkEnag.png",
       "sizes": "512x512",
       "type": "image/png"
     }

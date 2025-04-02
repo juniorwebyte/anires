@@ -1,76 +1,75 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
-// Admin WhatsApp - Números para notificação
-const ADMIN_WHATSAPP_NUMBERS = [
-  {
-    name: "Admin 1",
-    number: "5511984801839",
-    apiKey: "1782254",
-  },
-  {
-    name: "Admin 2",
-    number: "5511947366820",
-    apiKey: "7070864",
-  },
-]
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // Array para armazenar resultados de envio
-    const sendResults = []
+    // Ler o corpo da requisição
+    const data = await request.json()
 
-    // Enviar mensagem de teste para todos os administradores
-    for (const admin of ADMIN_WHATSAPP_NUMBERS) {
-      try {
-        // Formatar a mensagem de teste
-        const message =
-          `🧪 *Teste de Notificação* 🧪
-
-` +
-          `Esta é uma mensagem de teste do sistema de notificações do Street Dog Coin.
-
-` +
-          `Enviado para: ${admin.name} (${admin.number})
-
-` +
-          `Se você está recebendo esta mensagem, o sistema está funcionando corretamente!
-
-` +
-          `*Data e Hora:* ${new Date().toLocaleString("pt-BR")}`
-
-        // Enviar a mensagem usando a API CallMeBot
-        const encodedMessage = encodeURIComponent(message)
-        const apiUrl = `https://api.callmebot.com/whatsapp.php?phone=${admin.number}&text=${encodedMessage}&apikey=${admin.apiKey}`
-
-        const response = await fetch(apiUrl)
-
-        if (!response.ok) {
-          console.error(`Erro ao enviar mensagem de teste para ${admin.name}:`, await response.text())
-          sendResults.push({ admin: admin.name, success: false })
-        } else {
-          console.log(`Mensagem de teste enviada com sucesso para: ${admin.name} (${admin.number})`)
-          sendResults.push({ admin: admin.name, success: true })
-        }
-      } catch (error) {
-        console.error(`Erro ao enviar teste para ${admin.name}:`, error)
-        sendResults.push({ admin: admin.name, success: false })
-      }
+    // Validar dados básicos
+    if (!data.phoneNumber || !data.message || !data.apiKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Dados incompletos para envio de mensagem",
+        },
+        { status: 400 },
+      )
     }
 
-    // Se pelo menos uma mensagem foi enviada com sucesso, consideramos sucesso
-    const anySuccess = sendResults.some((r) => r.success)
+    // Registrar a tentativa de envio
+    console.log(`Enviando mensagem de teste para ${data.phoneNumber}`)
+    console.log(`Mensagem: ${data.message}`)
+    console.log(`API Key: ${data.apiKey}`)
 
-    return NextResponse.json({
-      success: anySuccess,
-      message: anySuccess
-        ? "Mensagem(ns) de teste enviada(s) com sucesso"
-        : "Falha ao enviar mensagens de teste para todos os administradores",
-      details: sendResults,
+    // Codificar a mensagem para URL
+    const encodedMessage = encodeURIComponent(data.message)
+
+    // Construir a URL da API CallMeBot
+    const callMeBotUrl = `https://api.callmebot.com/whatsapp.php?phone=${data.phoneNumber}&text=${encodedMessage}&apikey=${data.apiKey}`
+
+    console.log(`URL da API: ${callMeBotUrl}`)
+
+    // Fazer a chamada real à API CallMeBot com cabeçalhos específicos
+    const response = await fetch(callMeBotUrl, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Accept: "text/html,application/xhtml+xml,application/xml",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      },
     })
+
+    const responseText = await response.text()
+    console.log("Resposta da API CallMeBot:", responseText)
+
+    // Verificar se a resposta contém indicação de sucesso
+    if (responseText.includes("Message queued") || responseText.includes("Message Sent")) {
+      return NextResponse.json({
+        success: true,
+        message: "Mensagem de teste enviada com sucesso",
+        timestamp: new Date().toISOString(),
+        apiResponse: responseText,
+      })
+    } else {
+      console.error(`Resposta inesperada da API CallMeBot: ${responseText}`)
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Erro ao enviar mensagem: ${responseText}`,
+          apiResponse: responseText,
+        },
+        { status: 500 },
+      )
+    }
   } catch (error) {
     console.error("Erro ao enviar mensagem de teste:", error)
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : "Erro desconhecido" },
+      {
+        success: false,
+        message: "Erro ao processar a solicitação",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     )
   }

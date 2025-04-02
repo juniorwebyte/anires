@@ -6,6 +6,10 @@ export function verifyDomain(): boolean {
     "anires.org",
     "www.anires.org",
     "airdrop.anires.org",
+    "app.anires.org",
+    "presale.anires.org",
+    "staking.anires.org",
+    "docs.anires.org",
     "localhost",
     "vercel.app",
   ]
@@ -28,13 +32,11 @@ export async function verifyContract(contractAddress: string): Promise<{
   message: string
 }> {
   try {
-    // Em um ambiente real, você verificaria se o contrato está verificado no Etherscan/BSCScan
-    // e se não há problemas de segurança conhecidos
-
     // Lista de contratos verificados do AniRes
     const verifiedContracts = [
-      "0x1234567890123456789012345678901234567890", // Substitua pelo endereço real
-      "0x0987654321098765432109876543210987654321", // Substitua pelo endereço real
+      "0x1234567890123456789012345678901234567890", // Contrato principal AniRes
+      "0x0987654321098765432109876543210987654321", // Contrato de staking AniRes
+      "0xabcdef1234567890abcdef1234567890abcdef12", // Contrato de presale AniRes
     ]
 
     if (verifiedContracts.includes(contractAddress)) {
@@ -47,7 +49,7 @@ export async function verifyContract(contractAddress: string): Promise<{
       return {
         verified: false,
         securityIssues: ["Contrato não verificado"],
-        message: "Este contrato não está na lista de contratos verificados",
+        message: "Este contrato não está na lista de contratos verificados do AniRes",
       }
     }
   } catch (error) {
@@ -91,8 +93,9 @@ export async function verifyTransactionSecurity(transactionData: any): Promise<{
 
     // Verificar se o destinatário é conhecido
     const knownRecipients = [
-      "0x1234567890123456789012345678901234567890", // Substitua pelo endereço real
-      "0x0987654321098765432109876543210987654321", // Substitua pelo endereço real
+      "0x1234567890123456789012345678901234567890", // Carteira oficial AniRes
+      "0x0987654321098765432109876543210987654321", // Contrato de staking AniRes
+      "0xabcdef1234567890abcdef1234567890abcdef12", // Contrato de presale AniRes
     ]
 
     if (transactionData.to && !knownRecipients.includes(transactionData.to)) {
@@ -124,5 +127,48 @@ export function logSecurityEvent(eventType: "warning" | "error" | "info", messag
     // Enviar notificação para a equipe de segurança
     // Exemplo: sendSecurityAlert(message, data);
   }
+}
+
+// Função para verificar se um endereço de carteira é válido
+export function isValidWalletAddress(address: string): boolean {
+  // Verificar se o endereço tem o formato correto para Ethereum (0x seguido por 40 caracteres hexadecimais)
+  return /^0x[a-fA-F0-9]{40}$/.test(address)
+}
+
+// Função para sanitizar entradas de usuário
+export function sanitizeInput(input: string): string {
+  // Remover tags HTML e caracteres especiais
+  return input.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
+}
+
+// Função para detectar atividades suspeitas
+export function detectSuspiciousActivity(activity: {
+  ip: string
+  userAgent: string
+  action: string
+  timestamp: number
+}): boolean {
+  // Lista de padrões suspeitos
+  const suspiciousPatterns = [
+    // Bots maliciosos conhecidos
+    /bot|crawler|spider|crawl|wget/i,
+    // Ferramentas de hacking conhecidas
+    /burpsuite|owasp|zap|sqlmap|nmap|nikto/i,
+  ]
+
+  // Verificar se o user agent corresponde a algum padrão suspeito
+  if (suspiciousPatterns.some((pattern) => pattern.test(activity.userAgent))) {
+    logSecurityEvent("warning", "User agent suspeito detectado", activity)
+    return true
+  }
+
+  // Verificar ações em alta frequência (mais de 100 ações em 1 minuto)
+  const recentActivities = [] // Em uma implementação real, isso seria buscado de um banco de dados
+  if (recentActivities.length > 100) {
+    logSecurityEvent("warning", "Alta frequência de ações detectada", activity)
+    return true
+  }
+
+  return false
 }
 

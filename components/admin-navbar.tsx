@@ -1,69 +1,126 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { LogOut, LayoutDashboard, Coins } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Menu, X, LayoutDashboard, Users, Settings, Bell, LogOut } from "lucide-react"
+import { logoutAdmin } from "@/lib/storage-service"
 
-interface AdminNavbarProps {
-  onLogout: () => void
-}
-
-export default function AdminNavbar({ onLogout }: AdminNavbarProps) {
+export default function AdminNavbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
 
+  const handleLogout = () => {
+    logoutAdmin()
+    window.location.href = "/admin/login"
+  }
+
   const navItems = [
-    { name: "Dashboard", href: "/admin/dashboard", icon: <LayoutDashboard className="h-4 w-4 mr-2" /> },
-    { name: "Distribuição", href: "/admin/dashboard?tab=distribution", icon: <Coins className="h-4 w-4 mr-2" /> },
+    {
+      name: "Dashboard",
+      href: "/admin",
+      icon: <LayoutDashboard className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: "Reivindicações",
+      href: "/admin/claims",
+      icon: <Users className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: "Notificações",
+      href: "/admin/test-notification",
+      icon: <Bell className="h-4 w-4 mr-2" />,
+    },
+    {
+      name: "Configurações",
+      href: "/admin/settings",
+      icon: <Settings className="h-4 w-4 mr-2" />,
+    },
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md border-b border-purple-900/20">
-      <div className="container mx-auto px-4 flex items-center justify-between h-16">
-        <div className="flex items-center gap-2">
-          {/* Substituir a letra A por uma imagem de logo */}
-          <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
-            <Image
-              src="anires.png"
-              alt="AniRes"
-              width={32}
-              height={32}
-              className="object-cover"
-              priority
-            />
-          </div>
-          <span className="font-bold text-white">Admin AniRes</span>
+    <div className="mb-8">
+      {/* Desktop Navigation */}
+      <div className="hidden md:flex items-center justify-between py-4 border-b border-purple-800/30">
+        <div className="flex items-center">
+          <Link href="/admin" className="text-xl font-bold text-purple-400 mr-8">
+            AniRes Admin
+          </Link>
+          <nav className="flex space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3 py-2 rounded-md text-sm flex items-center ${
+                  pathname === item.href
+                    ? "bg-purple-900/30 text-purple-300"
+                    : "text-gray-400 hover:bg-purple-900/20 hover:text-purple-300"
+                }`}
+              >
+                {item.icon}
+                {item.name}
+              </Link>
+            ))}
+          </nav>
         </div>
-
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "px-3 py-2 text-sm rounded-md transition-colors flex items-center",
-                pathname === item.href || (item.href.includes("?tab=") && pathname.includes(item.href.split("?")[0]))
-                  ? "text-purple-300 bg-purple-900/20"
-                  : "text-gray-300 hover:text-purple-300 hover:bg-purple-900/10",
-              )}
-            >
-              {item.icon}
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-
         <Button
-          onClick={onLogout}
-          className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 flex items-center gap-2"
+          variant="outline"
+          className="border-purple-800/30 text-purple-400 hover:bg-purple-900/20"
+          onClick={handleLogout}
         >
-          <LogOut className="h-4 w-4" />
-          <span>Sair</span>
+          <LogOut className="h-4 w-4 mr-2" />
+          Sair
         </Button>
       </div>
-    </header>
+
+      {/* Mobile Navigation */}
+      <div className="md:hidden">
+        <div className="flex items-center justify-between py-4 border-b border-purple-800/30">
+          <Link href="/admin" className="text-xl font-bold text-purple-400">
+            AniRes Admin
+          </Link>
+          <Button
+            variant="outline"
+            size="icon"
+            className="border-purple-800/30 text-purple-400 hover:bg-purple-900/20"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+
+        {isMenuOpen && (
+          <div className="py-2 border-b border-purple-800/30">
+            <nav className="flex flex-col space-y-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-3 py-2 rounded-md text-sm flex items-center ${
+                    pathname === item.href
+                      ? "bg-purple-900/30 text-purple-300"
+                      : "text-gray-400 hover:bg-purple-900/20 hover:text-purple-300"
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              ))}
+              <Button
+                variant="outline"
+                className="border-purple-800/30 text-purple-400 hover:bg-purple-900/20 mt-2 w-full justify-start"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </Button>
+            </nav>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 

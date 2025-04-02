@@ -33,6 +33,7 @@ export function TransactionGuard({ children, walletAddress, transactionType = "c
         window.location.hostname === "anires.org" ||
         window.location.hostname === "www.anires.org" ||
         window.location.hostname === "airdrop.anires.org" ||
+        window.location.hostname === "presale.anires.org" ||
         window.location.hostname.includes("vercel.app") ||
         window.location.hostname === "localhost"
 

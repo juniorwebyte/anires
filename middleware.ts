@@ -6,6 +6,10 @@ const allowedOrigins = [
   "https://anires.org",
   "https://www.anires.org",
   "https://airdrop.anires.org",
+  "https://app.anires.org",
+  "https://presale.anires.org",
+  "https://staking.anires.org",
+  "https://docs.anires.org",
   "https://vercel.app",
   "https://vercel.com",
 ]
@@ -25,6 +29,7 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   const ip = request.ip || "unknown"
   const path = request.nextUrl.pathname
+  const origin = request.headers.get("origin")
 
   // Verificar limite de taxa para APIs
   if (path.startsWith("/api/")) {
@@ -51,6 +56,12 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Verificar se a solicitação é HTTP e redirecionar para HTTPS
+  if (request.nextUrl.protocol === "http:") {
+    const httpsUrl = `https://${request.nextUrl.host}${request.nextUrl.pathname}${request.nextUrl.search}`
+    return NextResponse.redirect(httpsUrl, 301)
+  }
+
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
@@ -58,7 +69,6 @@ export function middleware(request: NextRequest) {
   })
 
   // Verificar origem da solicitação
-  const origin = request.headers.get("origin")
   if (origin) {
     const isAllowed = allowedOrigins.some(
       (allowedOrigin) =>
@@ -92,21 +102,31 @@ export function middleware(request: NextRequest) {
   response.headers.set("X-Frame-Options", "DENY")
   response.headers.set("X-XSS-Protection", "1; mode=block")
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
+  response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 
-  // Adicionar cabeçalho de segurança para prevenir clickjacking
+  // Adicionar cabeçalho de segurança para prevenir clickjacking e melhorar a segurança geral
   response.headers.set(
     "Content-Security-Policy",
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; " +
       "connect-src 'self' https://*.infura.io https://*.alchemyapi.io https://*.coinbase.com " +
-      "https://api.coingecko.com https://api.coinmarketcap.com; " +
+      "https://api.coingecko.com https://api.coinmarketcap.com wss://*.walletconnect.org; " +
       "img-src 'self' data: https://v0.blob.com https://hebbkx1anhila5yf.public.blob.vercel-storage.com; " +
       "style-src 'self' 'unsafe-inline'; font-src 'self' data:; " +
-      "frame-src 'self' https://*.walletconnect.com https://*.coinbase.com;",
+      "frame-src 'self' https://*.walletconnect.com https://*.coinbase.com; " +
+      "object-src 'none'; base-uri 'self'; form-action 'self'; " +
+      "frame-ancestors 'none'; upgrade-insecure-requests;",
   )
+
+  // Adicionar cabeçalho de permissões
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), interest-cohort=()")
 
   return response
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/claim/:path*", "/admin/:path*", "/verify/:path*"],
+  matcher: [
+    // Aplicar a todas as rotas exceto recursos estáticos
+    "/((?!_next/static|_next/image|favicon.ico|images|assets|fonts).*)",
+  ],
 }
+

@@ -67,14 +67,14 @@ export default function AdminDashboard() {
 
   // Distribuição de tokens
   const [selectedUser, setSelectedUser] = useState<string>("")
-  const [tokenAmount, setTokenAmount] = useState<number>(1000)
+  const [tokenAmount, setTokenAmount] = useState<number>(100) // Alterado de 1000 para 100
   const [isDistributing, setIsDistributing] = useState(false)
 
   // Configurações
   const [config, setConfig] = useState<any>({
     airdropEnabled: true,
     totalTokensAllocated: 1000000,
-    tokensPerClaim: 100,
+    tokensPerClaim: 1000,
     claimDeadline: "",
     requireTwitter: true,
     requireTelegram: true,

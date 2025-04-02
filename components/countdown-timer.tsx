@@ -4,13 +4,6 @@ import { useEffect, useState, useCallback, useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock, Calendar, Rocket } from "lucide-react"
 
-// CONFIGURAÇÃO MANUAL DO TEMPO
-// Data específica configurada: 24/03/2025 às 06:00:00
-const TARGET_DATE = new Date(2025, 2, 24, 6, 0, 0) // Mês é 0-indexado (0=Jan, 1=Fev, 2=Mar...)
-
-// Se definido como true, o cronômetro ficará estático (não diminuirá com o tempo)
-const STATIC_COUNTDOWN = false
-
 interface TimeLeft {
   days: number
   hours: number
@@ -26,10 +19,11 @@ export default function CountdownTimer() {
     seconds: 0,
   })
   const [loading, setLoading] = useState(true)
+  const [launchDate, setLaunchDate] = useState<Date | null>(null)
 
   // Usar useCallback para evitar recriação da função em cada renderização
-  const calculateTimeLeft = useCallback(() => {
-    const difference = TARGET_DATE.getTime() - new Date().getTime()
+  const calculateTimeLeft = useCallback((targetDate: Date) => {
+    const difference = targetDate.getTime() - new Date().getTime()
 
     if (difference <= 0) {
       // O lançamento já ocorreu
@@ -45,14 +39,23 @@ export default function CountdownTimer() {
   }, [])
 
   useEffect(() => {
-    // Calcular imediatamente
-    setTimeLeft(calculateTimeLeft())
-    setLoading(false)
+    // CONFIGURAÇÃO DA DATA DE LANÇAMENTO
+    // Para alterar a data de lançamento, modifique a linha abaixo
+    // Formato: new Date(ano, mês-1, dia, hora, minuto, segundo)
+    // Observação: O mês é 0-indexed (0=janeiro, 1=fevereiro, ..., 11=dezembro)
 
-    // Se o cronômetro for estático, não configure o intervalo
-    if (STATIC_COUNTDOWN) {
-      return
-    }
+    // Data configurada para: 28 de abril de 2025, às 02:59 UTC
+    const targetDate = new Date(Date.UTC(2025, 3, 28, 2, 59, 0))
+
+    // IMPORTANTE: Esta é a data fixa que será usada se não houver uma data armazenada
+    // Para alterar a data no futuro, modifique apenas esta linha acima
+
+    // Definir a data de lançamento diretamente, ignorando o armazenamento
+    setLaunchDate(targetDate)
+
+    // Calcular imediatamente
+    setTimeLeft(calculateTimeLeft(targetDate))
+    setLoading(false)
 
     // Verificar se o usuário prefere reduzir animações
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -62,23 +65,26 @@ export default function CountdownTimer() {
 
     // Atualizar a cada segundo
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft())
+      setTimeLeft(calculateTimeLeft(targetDate))
     }, updateInterval)
 
     // Limpar o intervalo quando o componente for desmontado
     return () => clearInterval(timer)
   }, [calculateTimeLeft])
 
-  // Formatar a data alvo para exibição
+  // Memoizar a formatação da data para evitar recálculos desnecessários
   const formattedDate = useMemo(() => {
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(TARGET_DATE)
-  }, [])
+    if (!launchDate) return "Em breve"
+
+    // Formatação específica para mostrar a data em formato brasileiro com UTC
+    const day = launchDate.getUTCDate().toString().padStart(2, "0")
+    const month = (launchDate.getUTCMonth() + 1).toString().padStart(2, "0")
+    const year = launchDate.getUTCFullYear()
+    const hours = launchDate.getUTCHours().toString().padStart(2, "0")
+    const minutes = launchDate.getUTCMinutes().toString().padStart(2, "0")
+
+    return `${day}/${month}/${year}, ${hours}:${minutes} UTC`
+  }, [launchDate])
 
   if (loading) {
     return (

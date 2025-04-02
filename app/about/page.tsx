@@ -41,8 +41,8 @@ export default function AboutPage() {
               Sobre o AniRes
             </h1>
             <p className="text-xl text-gray-300">
-              Uma criptomoeda com propósito, unindo tecnologia blockchain e impacto social para ajudar cães de rua em
-              todo o mundo.
+              Uma criptomoeda com propósito, unindo tecnologia blockchain e impacto social para ajudar animais
+              resgatados em todo o mundo.
             </p>
           </motion.div>
         </div>
@@ -63,8 +63,8 @@ export default function AboutPage() {
               <h2 className="text-2xl font-bold mb-4 text-blue-400">Nossa Missão</h2>
               <p className="text-gray-300">
                 Criar um ecossistema descentralizado que conecte amantes de criptomoedas e defensores dos animais,
-                gerando recursos para apoiar organizações que cuidam de cães de rua em todo o mundo. Queremos ser a
-                ponte entre a tecnologia blockchain e o impacto social positivo.
+                gerando recursos para apoiar organizações que cuidam de animais resgatados em todo o mundo. Queremos ser
+                a ponte entre a tecnologia blockchain e o impacto social positivo.
               </p>
               <div className="mt-4 space-y-2">
                 <div className="flex items-start gap-2">
@@ -77,7 +77,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5" />
-                  <p className="text-gray-300">Facilitar a adoção responsável de cães de rua</p>
+                  <p className="text-gray-300">Facilitar a adoção responsável de animais resgatados</p>
                 </div>
               </div>
             </motion.div>
@@ -93,8 +93,8 @@ export default function AboutPage() {
               <h2 className="text-2xl font-bold mb-4 text-blue-400">Nossa Visão</h2>
               <p className="text-gray-300">
                 Ser a principal criptomoeda focada em causas sociais, estabelecendo um novo padrão para projetos que
-                combinam retorno financeiro com impacto positivo na sociedade. Queremos criar um mundo onde nenhum cão
-                de rua sofra por abandono ou falta de cuidados.
+                combinam retorno financeiro com impacto positivo na sociedade. Queremos criar um mundo onde nenhum
+                animal resgatado sofra por abandono ou falta de cuidados.
               </p>
               <div className="mt-4 space-y-2">
                 <div className="flex items-start gap-2">
@@ -130,20 +130,15 @@ export default function AboutPage() {
               <div className="space-y-4 text-gray-300">
                 <p>
                   Tudo começou com uma visão ousada: usar a tecnologia para transformar a vida de animais abandonados e
-                  dar a eles uma nova chance. 
-                  Enquanto o mundo cripto crescia, um grupo de apaixonados por animais
+                  dar a eles uma nova chance. Enquanto o mundo cripto crescia, um grupo de apaixonados por animais
                   percebeu uma oportunidade única – e se cada transação pudesse salvar vidas? Assim, em 2021, nasceu a
-                  AniRes (ANIRES), um token criado para unir blockchain e impacto social. 
-                  Nossa Jornada: Estruturamos o whitepaper e tokenomics. 
-                  Estudamos a viabilidade da fábrica de ração e do
-                  abrigo para cães, criando soluções reais para os animais. 
-                  Lançamento do token e airdrop!
+                  AniRes (ANIRES), um token criado para unir blockchain e impacto social. Nossa Jornada: 2022 –
+                  Estruturamos o whitepaper e tokenomics. 2023-2024 – Estudamos a viabilidade da fábrica de ração e do
+                  abrigo para cães, criando soluções reais para os animais. 2025 – Lançamento do token e airdrop!
                   Expansão para marketplace pet, DEX, NFTs sociais e doações rastreáveis. Por que o ANIRES será um
-                  sucesso? Inovação real: Um token com propósito e impacto direto. 
-                  Transparência total: Cada doação é
+                  sucesso? Inovação real: Um token com propósito e impacto direto. Transparência total: Cada doação é
                   rastreável via blockchain. Sustentabilidade: Criamos um ecossistema financeiro para transformar o
-                  mercado pet. 
-                  Junte-se a nós! Invista, compartilhe e ajude a construir um futuro onde nenhum cão seja
+                  mercado pet. Junte-se a nós! Invista, compartilhe e ajude a construir um futuro onde nenhum cão seja
                   esquecido! ANIRES – O Token Que Salva Vidas!
                 </p>
               </div>
@@ -176,10 +171,10 @@ export default function AboutPage() {
             >
               <div className="relative rounded-xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/historia.webp"
-                  alt="AniRes História"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/mascote.jpg-gQe3rOJGHCTIOITM0ffjL4dxDyvaen.jpeg"
+                  alt="Anires: Do conceito à realidade transformando vidas caninas"
                   width={600}
-                  height={400}
+                  height={600}
                   className="w-full h-auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
@@ -227,7 +222,7 @@ export default function AboutPage() {
               <h3 className="text-xl font-semibold mb-2 text-blue-300">Compaixão</h3>
               <p className="text-gray-400">
                 Colocamos o bem-estar dos animais em primeiro lugar, agindo com empatia e respeito por todas as formas
-                de vida. Nossa compaixão pelos cães de rua é o que impulsiona nossa missão diariamente.
+                de vida. Nossa compaixão pelos animais resgatados é o que impulsiona nossa missão diariamente.
               </p>
             </motion.div>
 
@@ -293,7 +288,7 @@ export default function AboutPage() {
                   whileHover={{ x: -5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">Concepção</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">2021-2022 - Concepção</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Rocket className="h-4 w-4 text-blue-400" />
@@ -318,7 +313,7 @@ export default function AboutPage() {
                   whileHover={{ x: -5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">Estudos e Viabilidade</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">2023-2024 - Estudos e Viabilidade</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Coins className="h-4 w-4 text-blue-400" />
@@ -345,7 +340,7 @@ export default function AboutPage() {
                   whileHover={{ x: 5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">Lançamento</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">Q1 2025 - Lançamento</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Rocket className="h-4 w-4 text-blue-400" />
@@ -370,7 +365,7 @@ export default function AboutPage() {
                   whileHover={{ x: 5 }}
                   className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-6"
                 >
-                  <h3 className="text-xl font-bold mb-4 text-purple-400">Expansão</h3>
+                  <h3 className="text-xl font-bold mb-4 text-purple-400">S2 2025 - Expansão</h3>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <Coins className="h-4 w-4 text-blue-400" />
@@ -429,8 +424,8 @@ export default function AboutPage() {
                 <p className="text-purple-400 mb-4">CEO & Fundador</p>
                 <p className="text-gray-300 text-center mb-6">
                   Apaixonado por tecnologia e proteção animal, combina expertise em blockchain com um forte compromisso
-                  com causas sociais. Com a visão de criar um impacto real, lidera o desenvolvimento do AniRes,
-                  unindo inovação financeira e solidariedade para transformar a vida de cães de rua.
+                  com causas sociais. Com a visão de criar um impacto real, lidera o desenvolvimento do AniRes, unindo
+                  inovação financeira e solidariedade para transformar a vida de animais resgatados.
                 </p>
                 <div className="flex gap-4">
                   <Link
@@ -475,15 +470,15 @@ export default function AboutPage() {
                   />
                 </div>
                 <h3 className="text-2xl font-bold text-blue-400">Júnior Alves</h3>
-                <p className="text-purple-400 mb-4">
-                  <center>Arquiteto Blockchain e Especialista em Tecnologia Full Stack</center>
-                </p>
+                <div className="text-purple-400 mb-4 text-center">
+                  Arquiteto Blockchain e Especialista em Tecnologia Full Stack
+                </div>
                 <p className="text-gray-300 text-center mb-6">
                   Profissional sênior em desenvolvimento full stack e blockchain, é o arquiteto por trás da
-                  infraestrutura tecnológica do AniRes. Com vasta experiência em criptoativos, contratos
-                  inteligentes e sistemas descentralizados, ele lidera a inovação do projeto, garantindo segurança,
-                  escalabilidade e impacto real. Sua paixão pela tecnologia e pela causa animal impulsiona a criação de
-                  um ecossistema robusto, conectando blockchain e transformação social.
+                  infraestrutura tecnológica do AniRes. Com vasta experiência em criptoativos, contratos inteligentes e
+                  sistemas descentralizados, ele lidera a inovação do projeto, garantindo segurança, escalabilidade e
+                  impacto real. Sua paixão pela tecnologia e pela causa animal impulsiona a criação de um ecossistema
+                  robusto, conectando blockchain e transformação social.
                 </p>
                 <div className="flex gap-4">
                   <Link
@@ -532,15 +527,15 @@ export default function AboutPage() {
                   />
                 </div>
                 <h3 className="text-2xl font-bold text-blue-400">José Antonio</h3>
-                <p className="text-purple-400 mb-4">
-                  <center>Engenheiro Civil e Especialista em Infraestrutura Social</center>
-                </p>
+                <div className="text-purple-400 mb-4 text-center">
+                  Engenheiro Civil e Especialista em Infraestrutura Social
+                </div>
                 <p className="text-gray-300 text-center mb-6">
                   Com vasta experiência em grandes projetos de construção, José Antonio já liderou obras de escolas,
                   prédios e iniciativas sociais em diversas prefeituras. Sua expertise em engenharia civil e
-                  planejamento estrutural é fundamental para a criação da fábrica de ração e do abrigo do AniRes
-                  Coin, garantindo que cada etapa seja realizada com eficiência, sustentabilidade e impacto positivo.
-                  Seu compromisso com projetos sociais reflete a missão do ANIRES de transformar vidas por meio da
+                  planejamento estrutural é fundamental para a criação da fábrica de ração e do abrigo do AniRes,
+                  garantindo que cada etapa seja realizada com eficiência, sustentabilidade e impacto positivo. Seu
+                  compromisso com projetos sociais reflete a missão do ANIRES de transformar vidas por meio da
                   infraestrutura e inovação.
                 </p>
                 <div className="flex gap-4">
@@ -675,7 +670,8 @@ export default function AboutPage() {
             <div className="text-center max-w-3xl mx-auto">
               <h2 className="text-3xl font-bold mb-6 text-blue-300">Faça Parte desta História</h2>
               <p className="text-gray-300 text-lg mb-8">
-                Junte-se a nós nesta missão de transformar a vida dos cães de rua através da tecnologia blockchain.
+                Junte-se a nós nesta missão de transformar a vida dos animais resgatados através da tecnologia
+                blockchain.
               </p>
               <Link href="/claim">
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8">

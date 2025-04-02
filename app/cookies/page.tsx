@@ -60,7 +60,7 @@ export default function CookiesPage() {
                 </li>
                 <li>
                   <strong>Cookies de Marketing:</strong> Usados para rastrear visitantes em sites. A intenção é exibir
-                  anúncios relevantes e envolventes para o usuário individual.
+                  anuncios relevantes e envolventes para o usuário individual.
                 </li>
               </ul>
 

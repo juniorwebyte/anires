@@ -1,903 +1,1269 @@
 "use client"
 
-import React from "react"
+import type React from "react"
 
-import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Twitter,
-  MessageCircle,
-  Heart,
-  Copy,
-  ExternalLink,
-  Wallet,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
-import ConfettiExplosion from "react-confetti-explosion"
+import { Twitter, Send, CheckCircle, Clock, ExternalLink, Copy, AlertCircle, Heart, Shield, Wallet } from "lucide-react"
+import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
-import { addClaim, getClaimByWalletAddress, getSystemConfig } from "@/lib/storage-service"
-
-// Memoizar o componente de tarefa individual para evitar re-renderizações desnecessárias
-const TaskItem = React.memo(
-  ({
-    task,
-    handleInputChange,
-    handleVerifyTask,
-    copyHashtags,
-  }: {
-    task: Task
-    handleInputChange: (taskId: number, value: string) => void
-    handleVerifyTask: (taskId: number) => void
-    copyHashtags: () => void
-  }) => {
-    return (
-      <div
-        key={task.id}
-        className={cn(
-          "flex items-start p-4 rounded-lg border transition-all",
-          task.status === "completed"
-            ? "border-green-600/30 bg-green-900/10"
-            : task.status === "failed"
-              ? "border-red-600/30 bg-red-900/10"
-              : task.current
-                ? "border-purple-600/30 bg-purple-900/10"
-                : "border-gray-800/30 bg-black/20 opacity-70",
-        )}
-      >
-        <div className="mr-4 mt-0.5">
-          {task.status === "completed" ? (
-            <div className="h-6 w-6 rounded-full bg-green-900/50 flex items-center justify-center">
-              <CheckCircle2 className="h-4 w-4 text-green-400" />
-            </div>
-          ) : task.status === "verifying" ? (
-            <div className="h-6 w-6 rounded-full bg-blue-900/50 flex items-center justify-center">
-              <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
-            </div>
-          ) : task.status === "failed" ? (
-            <div className="h-6 w-6 rounded-full bg-red-900/50 flex items-center justify-center">
-              <AlertCircle className="h-4 w-4 text-red-400" />
-            </div>
-          ) : (
-            <div className="h-6 w-6 rounded-full bg-purple-900/50 border border-purple-500/50 flex items-center justify-center">
-              {task.icon}
-            </div>
-          )}
-        </div>
-        <div className="flex-1 space-y-2">
-          <div>
-            <h3
-              className={cn(
-                "font-medium",
-                task.status === "completed"
-                  ? "text-green-400"
-                  : task.status === "failed"
-                    ? "text-red-400"
-                    : task.current
-                      ? "text-purple-300"
-                      : "text-gray-400",
-              )}
-            >
-              {task.title}
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">{task.description}</p>
-          </div>
-
-          {task.id === 2 && (
-            <div className="bg-purple-900/10 border border-purple-800/20 rounded p-2 text-xs text-gray-300 font-mono relative">
-              <div className="max-h-20 overflow-y-auto pr-2">{task.hashtags}</div>
-              <button
-                onClick={copyHashtags}
-                className="absolute top-2 right-2 text-purple-400 hover:text-purple-300"
-                title="Copiar hashtags"
-              >
-                <Copy className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-
-          {task.link && (
-            <a
-              href={task.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-sm text-purple-400 hover:text-purple-300"
-            >
-              {task.linkText} <ExternalLink className="ml-1 h-3 w-3" />
-            </a>
-          )}
-
-          {task.secondaryLink && (
-            <a
-              href={task.secondaryLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-sm text-purple-400 hover:text-purple-300 mt-1"
-            >
-              {task.secondaryLinkText} <ExternalLink className="ml-1 h-3 w-3" />
-            </a>
-          )}
-
-          {task.inputPlaceholder && (task.current || task.status === "failed") && (
-            <div className="flex gap-2">
-              <Input
-                placeholder={task.inputPlaceholder}
-                value={task.inputValue || ""}
-                onChange={(e) => handleInputChange(task.id, e.target.value)}
-                className="bg-black/50 border-purple-800/30 text-white"
-                disabled={task.status === "verifying" || task.status === "completed"}
-              />
-              <Button
-                onClick={() => handleVerifyTask(task.id)}
-                disabled={!task.inputValue || task.status === "verifying" || task.status === "completed"}
-                className={
-                  task.status === "completed" ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
-                }
-              >
-                {task.status === "verifying" ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Verificando...
-                  </>
-                ) : task.status === "completed" ? (
-                  <>
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Verificado
-                  </>
-                ) : (
-                  "Verificar"
-                )}
-              </Button>
-            </div>
-          )}
-
-          {task.id === 3 && (task.current || task.status === "failed") && (
-            <Button
-              onClick={() => handleVerifyTask(task.id)}
-              disabled={task.status === "verifying" || task.status === "completed"}
-              className={
-                task.status === "completed" ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
-              }
-            >
-              {task.status === "verifying" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Verificando...
-                </>
-              ) : task.status === "completed" ? (
-                <>
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Verificado
-                </>
-              ) : (
-                "Verificar curtida"
-              )}
-            </Button>
-          )}
-        </div>
-      </div>
-    )
-  },
-)
-TaskItem.displayName = "TaskItem"
-
-declare global {
-  interface Window {
-    ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>
-      isMetaMask?: boolean
-      on: (event: string, callback: any) => void
-    }
-  }
-}
-
-type TaskStatus = "pending" | "completed" | "verifying" | "failed"
-
-interface Task {
-  id: number
-  title: string
-  description: string
-  status: TaskStatus
-  current: boolean
-  inputValue?: string
-  inputPlaceholder?: string
-  link?: string
-  linkText?: string
-  secondaryLink?: string
-  secondaryLinkText?: string
-  icon: React.ReactNode
-  hashtags?: string
-}
+import SuccessModal from "./success-modal"
+import ConfettiEffect from "./confetti-effect"
+import {
+  verifyTwitterFollow,
+  verifyTwitterRetweet,
+  verifyTwitterLike,
+  verifyTelegramJoin,
+  verifyAllTasks,
+} from "./verification-api"
+import { sendTransaction, isMetaMaskInstalled, checkTransactionStatus } from "@/lib/ethers-utils"
+import { recordClaim, hasClaimedTokens } from "@/lib/claim-storage"
 
 interface AirdropTasksProps {
   walletAddress: string
   walletType: string
+  onTasksCompleted?: (completed: boolean) => void
+  referredBy?: string | null
 }
 
-export default function AirdropTasks({ walletAddress, walletType }: AirdropTasksProps) {
+interface Task {
+  id: string
+  title: string
+  description: string
+  icon: React.ReactNode
+  completed: boolean
+  locked: boolean
+  verifying: boolean
+  error: string | null
+}
+
+export default function AirdropTasks({ walletAddress, walletType, onTasksCompleted, referredBy }: AirdropTasksProps) {
   const { toast } = useToast()
+  const [twitterUsername, setTwitterUsername] = useState("")
+  const [retweetLink, setRetweetLink] = useState("")
+  const [telegramId, setTelegramId] = useState("")
+  const [verificationProgress, setVerificationProgress] = useState(0)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [isVerified, setIsVerified] = useState(false)
+  const [verificationFailed, setVerificationFailed] = useState(false)
+  const [failedTaskId, setFailedTaskId] = useState<string | null>(null)
+  const [claimEnabled, setClaimEnabled] = useState(false)
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [transactionHash, setTransactionHash] = useState<string | null>(null)
+  const [tokenAmount, setTokenAmount] = useState(100) // Quantidade padrão de tokens
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const tasksCompletedRef = useRef(false)
+  const hasClaimedRef = useRef(false)
+  const hasInitializedRef = useRef(false)
+  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null) // Referência para armazenar o intervalo de verificação de transação
+  const [hasClaimed, setHasClaimed] = useState(false)
+  const [internalIsConnected, setInternalIsConnected] = useState(false)
+
+  // Callback para verificar se a carteira está conectada
+  const checkWalletConnection = useCallback(() => {
+    setInternalIsConnected(!!walletAddress)
+  }, [walletAddress])
+
+  // Inicialização segura - executada apenas uma vez
+  useEffect(() => {
+    if (!hasInitializedRef.current && walletAddress) {
+      hasInitializedRef.current = true
+
+      // Verificar se a carteira já reivindicou tokens
+      const claimed = hasClaimedTokens(walletAddress)
+      hasClaimedRef.current = claimed
+      setHasClaimed(claimed)
+
+      // Definir o valor do token com base no referral
+      if (referredBy) {
+        setTokenAmount(110) // 10% de bônus para referidos
+      }
+    }
+  }, [walletAddress, referredBy])
+
+  useEffect(() => {
+    if (hasClaimed) {
+      toast({
+        title: "Reivindicação já realizada",
+        description: "Esta carteira já reivindicou tokens anteriormente.",
+        variant: "default",
+        className: "bg-yellow-950 border-yellow-800 text-yellow-100",
+      })
+    }
+  }, [hasClaimed, toast])
+
   const [tasks, setTasks] = useState<Task[]>([
     {
-      id: 1,
+      id: "twitter-follow",
       title: "Seguir no Twitter",
       description: "Siga @aniresbank",
-      status: "pending",
-      current: true,
-      inputValue: "",
-      inputPlaceholder: "Digite seu nome de usuário do Twitter",
-      link: "https://x.com/aniresbank",
-      linkText: "Seguir @aniresbank",
       icon: <Twitter className="h-5 w-5 text-blue-400" />,
+      completed: false,
+      locked: false,
+      verifying: false,
+      error: null,
     },
     {
-      id: 2,
+      id: "twitter-retweet",
       title: "Retweet com Hashtags",
       description: "Faça um quote retweet do tweet do AniRes com as hashtags",
-      status: "pending",
-      current: false,
-      inputValue: "",
-      inputPlaceholder: "Cole o link do seu retweet",
-      link: "https://x.com/aniresbank/status/1902540931510775987",
-      linkText: "Ver tweet para retweet",
       icon: <Twitter className="h-5 w-5 text-blue-400" />,
+      completed: false,
+      locked: true,
+      verifying: false,
+      error: null,
     },
     {
-      id: 3,
+      id: "twitter-like",
       title: "Curtir no Twitter",
       description: "Curta o tweet do AniRes",
-      status: "pending",
-      current: false,
-      link: "https://x.com/intent/like?tweet_id=1902540931510775987",
-      linkText: "Curtir tweet",
       icon: <Heart className="h-5 w-5 text-red-400" />,
+      completed: false,
+      locked: true,
+      verifying: false,
+      error: null,
     },
     {
-      id: 4,
+      id: "telegram-join",
       title: "Entrar no Grupo do Telegram",
       description: "Entre no grupo do Telegram do AniRes e obtenha seu ID",
-      status: "pending",
-      current: false,
-      inputValue: "",
-      inputPlaceholder: "Digite seu ID do Telegram (ex: 6123567677)",
-      link: "https://t.me/+QjlsDJcarak3YTQ5",
-      linkText: "Entrar no grupo do Telegram",
-      icon: <MessageCircle className="h-5 w-5 text-blue-400" />,
-      secondaryLink: "https://t.me/userinfobot",
-      secondaryLinkText: "Obtenha seu ID de usuário do Telegram",
+      icon: <Send className="h-5 w-5 text-blue-400" />,
+      completed: false,
+      locked: true,
+      verifying: false,
+      error: null,
     },
   ])
 
-  const [verificationStatus, setVerificationStatus] = useState<"idle" | "verifying" | "completed" | "failed">("idle")
-  const [verificationProgress, setVerificationProgress] = useState(0)
-  const [claimStatus, setClaimStatus] = useState<"idle" | "paying" | "confirming" | "completed" | "failed">("idle")
-  const [isExploding, setIsExploding] = useState(false)
-  const [hashtags] = useState(
-    "#airdrop #Dogecoin #eth #ShibaInu #mainnet #pepecoin #web3 #crypto #StreetDogCoin #TieBank #BancoDigital #AniRes #CryptoForACause #CryptoForACause #DogAdoption #tiebank #animalrescue #anires #DogRescue #StreetDogs #CharityCrypto #DogLovers",
-  )
-  const [existingClaim, setExistingClaim] = useState(false)
-  const [systemConfig, setSystemConfig] = useState<any>(null)
-
-  // Endereço para receber as taxas
-  const RECIPIENT_ADDRESS = "0x0Fcf41A546b2de64aBDc320703dDD657dF802Eb4"
-  // Valor da taxa em ETH (equivalente a 0.04 USD)
-  // Nota: Em um ambiente real, você pode querer usar uma API para obter a taxa de câmbio atual
-  const FEE_AMOUNT = "0.000012" // Aproximadamente 0.04 USD em ETH na rede Sepolia
-
-  // Verificar se o usuário já fez uma reivindicação
+  // Usar useEffect para verificar se todas as tarefas estão completas
+  // e chamar o callback onTasksCompleted de forma segura
   useEffect(() => {
-    if (walletAddress) {
-      try {
-        const claim = getClaimByWalletAddress(walletAddress)
-        if (claim) {
-          setExistingClaim(true)
-          toast({
-            title: "Reivindicação existente",
-            description: "Este endereço de carteira já fez uma reivindicação.",
-            variant: "destructive",
-          })
-        }
+    const allCompleted = tasks.every((task) => task.completed)
 
-        // Carregar configurações do sistema
-        const config = getSystemConfig()
-        setSystemConfig(config)
+    // Apenas notificar se o estado mudou para evitar chamadas desnecessárias
+    if (allCompleted !== tasksCompletedRef.current) {
+      tasksCompletedRef.current = allCompleted
 
-        // Ajustar tarefas com base nas configurações
-        if (config && (!config.requireTwitter || !config.requireTelegram)) {
-          setTasks((prevTasks) => {
-            let updatedTasks = [...prevTasks]
-
-            if (!config.requireTwitter) {
-              // Remover tarefas relacionadas ao Twitter
-              updatedTasks = updatedTasks.filter((task) => task.id !== 1 && task.id !== 2 && task.id !== 3)
-            }
-
-            if (!config.requireTelegram) {
-              // Remover tarefa do Telegram
-              updatedTasks = updatedTasks.filter((task) => task.id !== 4)
-            }
-
-            // Atualizar a tarefa atual
-            if (updatedTasks.length > 0) {
-              updatedTasks = updatedTasks.map((task, index) => ({
-                ...task,
-                current: index === 0,
-              }))
-            }
-
-            return updatedTasks
-          })
-        }
-      } catch (error) {
-        console.error("Erro ao verificar reivindicação:", error)
+      // Usar setTimeout para garantir que a atualização não ocorra durante a renderização
+      if (onTasksCompleted) {
+        setTimeout(() => {
+          onTasksCompleted(allCompleted)
+        }, 0)
       }
     }
-  }, [walletAddress, toast])
+  }, [tasks, onTasksCompleted])
 
-  const handleInputChange = (taskId: number, value: string) => {
-    setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, inputValue: value } : task)))
-  }
+  const updateTaskState = (taskId: string, updates: Partial<Task>) => {
+    setTasks((prevTasks) => {
+      const taskIndex = prevTasks.findIndex((t) => t.id === taskId)
+      if (taskIndex === -1) return prevTasks
 
-  const handleVerifyTask = (taskId: number) => {
-    // Verificação básica para cada tarefa
-    const task = tasks.find((t) => t.id === taskId)
-    if (!task) return
+      const updatedTasks = [...prevTasks]
+      updatedTasks[taskIndex] = { ...updatedTasks[taskIndex], ...updates }
 
-    setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, status: "verifying" } : task)))
-
-    // Simulação de verificação
-    setTimeout(() => {
-      let verified = false
-      let errorMessage = ""
-
-      switch (taskId) {
-        case 1: // Twitter follow
-          verified = !!task.inputValue && task.inputValue.trim().length > 0
-          errorMessage = "Por favor, insira um nome de usuário válido"
-          break
-        case 2: // Retweet
-          verified = (!!task.inputValue && task.inputValue.includes("twitter.com")) || task.inputValue.includes("x.com")
-          errorMessage = "Por favor, insira um link de retweet válido"
-          break
-        case 3: // Like
-          verified = true // Simulação de verificação automática
-          break
-        case 4: // Telegram
-          verified = !!task.inputValue && /^\d{5,}$/.test(task.inputValue)
-          errorMessage = "Por favor, insira um ID de Telegram válido (apenas números)"
-          break
+      // Se a tarefa foi concluída, desbloquear a próxima
+      if (updates.completed && taskIndex + 1 < updatedTasks.length) {
+        updatedTasks[taskIndex + 1].locked = false
       }
 
-      if (verified) {
-        setTasks((prevTasks) => {
-          const updatedTasks = prevTasks.map((task) => {
-            if (task.id === taskId) {
-              return { ...task, status: "completed", current: false }
-            } else if (task.id === taskId + 1 && task.status === "pending") {
-              return { ...task, current: true }
-            }
-            return task
-          })
-          return updatedTasks
-        })
-
-        toast({
-          title: "Tarefa verificada",
-          description: `A tarefa "${task.title}" foi verificada com sucesso!`,
-          className: "bg-green-950 border-green-800 text-green-100",
-        })
-      } else {
-        setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, status: "failed" } : task)))
-
-        toast({
-          title: "Falha na verificação",
-          description: errorMessage || "Não foi possível verificar esta tarefa. Tente novamente.",
-          variant: "destructive",
-        })
-      }
-    }, 1500)
-  }
-
-  const handleStartVerification = async () => {
-    const incompleteTasks = tasks.filter((task) => task.status !== "completed")
-
-    if (incompleteTasks.length > 0) {
-      toast({
-        title: "Tarefas incompletas",
-        description: "Complete todas as tarefas antes de iniciar a verificação.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setVerificationStatus("verifying")
-    setVerificationProgress(0)
-
-    // Simulação de progresso de verificação
-    const interval = setInterval(() => {
-      setVerificationProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          return 100
-        }
-        return prev + 1
-      })
-    }, 100)
-
-    // Simulação de verificação completa após 10 segundos
-    setTimeout(() => {
-      clearInterval(interval)
-      setVerificationProgress(100)
-      setVerificationStatus("completed")
-
-      toast({
-        title: "Verificação concluída",
-        description: "Todas as tarefas foram verificadas com sucesso! Você pode reivindicar seus tokens agora.",
-        className: "bg-green-950 border-green-800 text-green-100",
-      })
-    }, 10000)
-  }
-
-  // Função para converter ETH para Wei (formato hexadecimal)
-  const ethToWei = (ethAmount: string): string => {
-    // 1 ETH = 10^18 Wei
-    const wei = Number.parseFloat(ethAmount) * 1e18
-    // Converter para hexadecimal (formato 0x...)
-    return "0x" + Math.floor(wei).toString(16)
-  }
-
-  // Otimizar a função handleClaimTokens para evitar re-renderizações desnecessárias
-  // Usar useCallback para funções que são passadas como props
-
-  // Modificar a função handleClaimTokens para adicionar notificação WhatsApp
-  // Substituir a implementação existente por esta versão melhorada
-  const handleClaimTokens = useCallback(async () => {
-    if (verificationStatus !== "completed") {
-      toast({
-        title: "Verificação necessária",
-        description: "Complete a verificação de todas as tarefas antes de reivindicar tokens.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    if (existingClaim) {
-      toast({
-        title: "Reivindicação existente",
-        description: "Este endereço de carteira já fez uma reivindicação.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    // Iniciar processo de pagamento
-    setClaimStatus("paying")
-
-    try {
-      // Verificar se o provider está disponível
-      if (!window.ethereum) {
-        throw new Error("Carteira Web3 não encontrada. Por favor, instale o MetaMask.")
-      }
-
-      // Solicitar acesso à conta
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
-      if (!accounts || accounts.length === 0) {
-        throw new Error("Nenhuma conta encontrada ou acesso negado.")
-      }
-
-      // Converter o valor da taxa de ETH para Wei (formato hexadecimal)
-      const valueInWei = ethToWei(FEE_AMOUNT)
-
-      // Preparar a transação - agora com valor para enviar ETH
-      const transactionParameters = {
-        to: RECIPIENT_ADDRESS, // Endereço que receberá a taxa
-        from: accounts[0], // Endereço do usuário
-        value: valueInWei, // Valor em wei (0.04 USD em ETH)
-      }
-
-      // Notificar o usuário sobre a taxa
-      toast({
-        title: "Pagamento de taxa",
-        description: `Sua carteira será aberta para autorizar o pagamento de ${FEE_AMOUNT} ETH (aprox. $0.04 USD) para reivindicar seus tokens.`,
-        className: "bg-blue-950 border-blue-800 text-blue-100",
-      })
-
-      // Enviar a transação
-      const txHash = await window.ethereum.request({
-        method: "eth_sendTransaction",
-        params: [transactionParameters],
-      })
-
-      // Transação enviada, aguardar confirmação
-      setClaimStatus("confirming")
-
-      toast({
-        title: "Transação enviada",
-        description: "Aguardando confirmação da transação na blockchain...",
-        className: "bg-blue-950 border-blue-800 text-blue-100",
-      })
-
-      // Aguardar confirmação da transação
-      const checkTransaction = async () => {
-        try {
-          const receipt = await window.ethereum.request({
-            method: "eth_getTransactionReceipt",
-            params: [txHash],
-          })
-
-          if (receipt) {
-            // Transação confirmada
-            const twitterUsername = tasks.find((t) => t.id === 1)?.inputValue || ""
-            const telegramId = tasks.find((t) => t.id === 4)?.inputValue || ""
-            const tokensPerClaim = systemConfig?.tokensPerClaim || 1000
-
-            // Adicionar reivindicação ao armazenamento
-            addClaim({
-              name: twitterUsername,
-              walletAddress,
-              walletType,
-              twitterUsername,
-              telegramId,
-              tokensRequested: tokensPerClaim,
-            })
-
-            // Enviar notificação WhatsApp para o administrador
-            try {
-              await sendWhatsAppNotification(walletAddress, twitterUsername, telegramId)
-              console.log("Notificação WhatsApp enviada com sucesso")
-            } catch (notifyError) {
-              console.error("Erro ao enviar notificação WhatsApp:", notifyError)
-              // Não falhar a reivindicação se a notificação falhar
-            }
-
-            setClaimStatus("completed")
-            setIsExploding(true)
-
-            toast({
-              title: "Tokens Reivindicados!",
-              description:
-                "Parabéns! Sua taxa foi paga com sucesso e seus tokens $ANIRES foram reivindicados. Eles serão enviados para sua carteira em breve.",
-              className: "bg-green-950 border-green-800 text-green-100",
-            })
-          } else {
-            // Continuar verificando
-            setTimeout(checkTransaction, 1000)
-          }
-        } catch (error) {
-          console.error("Erro ao verificar transação:", error)
-        }
-      }
-
-      // Iniciar verificação da transação
-      checkTransaction()
-    } catch (error) {
-      console.error("Erro ao processar transação:", error)
-      setClaimStatus("failed")
-
-      let errorMessage = "Ocorreu um erro ao processar a transação."
-
-      if (error instanceof Error) {
-        if (error.message.includes("user rejected") || error.message.includes("user denied")) {
-          errorMessage = "Você rejeitou a transação na sua carteira."
-        } else if (error.message.includes("insufficient funds")) {
-          errorMessage = "Saldo insuficiente para pagar a taxa de reivindicação."
-        } else {
-          errorMessage = error.message
-        }
-      }
-
-      toast({
-        title: "Erro na transação",
-        description: errorMessage,
-        variant: "destructive",
-      })
-    }
-  }, [verificationStatus, existingClaim, toast, systemConfig, tasks, walletAddress, walletType])
-
-  // Adicionar a função de envio de notificação WhatsApp logo abaixo
-  // Esta função envia a notificação para o número fornecido
-  const sendWhatsAppNotification = async (walletAddress: string, twitterUsername: string, telegramId: string) => {
-    try {
-      // Enviar a requisição para nosso servidor
-      const response = await fetch("/api/notify-claim", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          walletAddress,
-          twitterUsername,
-          telegramId,
-        }),
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error("Erro ao enviar notificação WhatsApp:", errorText)
-        throw new Error(`Erro ao enviar notificação: ${errorText}`)
-      }
-
-      return await response.json()
-    } catch (error) {
-      console.error("Erro ao enviar notificação WhatsApp:", error)
-      throw error
-    }
-  }
-
-  const copyHashtags = () => {
-    navigator.clipboard.writeText(hashtags)
-    toast({
-      title: "Copiado!",
-      description: "Hashtags copiadas para a área de transferência",
-      duration: 3000,
+      return updatedTasks
     })
   }
 
-  const allTasksCompleted = tasks.every((task) => task.status === "completed")
+  const handleTwitterFollowVerification = async () => {
+    if (!twitterUsername) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, digite seu nome de usuário do Twitter",
+        variant: "destructive",
+      })
+      return
+    }
 
-  if (existingClaim) {
+    // Remover @ do início do nome de usuário se existir
+    const username = twitterUsername.startsWith("@") ? twitterUsername.substring(1) : twitterUsername
+
+    // Atualizar estado para mostrar que está verificando
+    updateTaskState("twitter-follow", { verifying: true, error: null })
+
+    try {
+      // Verificação em tempo real com a API
+      const response = await verifyTwitterFollow(username, "aniresbank", walletAddress)
+
+      if (response.success) {
+        updateTaskState("twitter-follow", { completed: true, verifying: false })
+        toast({
+          title: "Seguidor verificado!",
+          description: response.message,
+          className: "bg-green-950 border-green-800 text-green-100",
+        })
+      } else {
+        updateTaskState("twitter-follow", { verifying: false, error: response.message })
+        toast({
+          title: "Erro na verificação",
+          description: response.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao verificar seguidor:", error)
+      updateTaskState("twitter-follow", {
+        verifying: false,
+        error: "Erro ao verificar. Tente novamente.",
+      })
+      toast({
+        title: "Erro na verificação",
+        description: "Ocorreu um erro ao verificar. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleTwitterRetweetVerification = async () => {
+    if (!retweetLink) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, cole o link do seu retweet",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Validação mais robusta do link
+    if (!retweetLink.match(/https?:\/\/(www\.)?(twitter|x)\.com\/[a-zA-Z0-9_]+\/status\/\d+/)) {
+      toast({
+        title: "Link inválido",
+        description: "Por favor, forneça um link válido de retweet do Twitter/X",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Atualizar estado para mostrar que está verificando
+    updateTaskState("twitter-retweet", { verifying: true, error: null })
+
+    try {
+      // Verificação em tempo real com a API
+      const response = await verifyTwitterRetweet(retweetLink, "1902540931510775987", walletAddress)
+
+      if (response.success) {
+        updateTaskState("twitter-retweet", { completed: true, verifying: false })
+        toast({
+          title: "Retweet verificado!",
+          description: response.message,
+          className: "bg-green-950 border-green-800 text-green-100",
+        })
+      } else {
+        updateTaskState("twitter-retweet", { verifying: false, error: response.message })
+        toast({
+          title: "Erro na verificação",
+          description: response.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao verificar retweet:", error)
+      updateTaskState("twitter-retweet", {
+        verifying: false,
+        error: "Erro ao verificar. Tente novamente.",
+      })
+      toast({
+        title: "Erro na verificação",
+        description: "Ocorreu um erro ao verificar. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleTwitterLikeVerification = async () => {
+    // Atualizar estado para mostrar que está verificando
+    updateTaskState("twitter-like", { verifying: true, error: null })
+
+    try {
+      // Verificação em tempo real com a API
+      const response = await verifyTwitterLike("1902540931510775987", walletAddress)
+
+      if (response.success) {
+        updateTaskState("twitter-like", { completed: true, verifying: false })
+        toast({
+          title: "Curtida verificada!",
+          description: response.message,
+          className: "bg-green-950 border-green-800 text-green-100",
+        })
+      } else {
+        updateTaskState("twitter-like", { verifying: false, error: response.message })
+        toast({
+          title: "Erro na verificação",
+          description: response.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao verificar curtida:", error)
+      updateTaskState("twitter-like", {
+        verifying: false,
+        error: "Erro ao verificar. Tente novamente.",
+      })
+      toast({
+        title: "Erro na verificação",
+        description: "Ocorreu um erro ao verificar. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleTelegramJoinVerification = async () => {
+    if (!telegramId) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, digite seu ID do Telegram",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Validação mais robusta do ID do Telegram
+    if (!/^\d{6,15}$/.test(telegramId)) {
+      toast({
+        title: "ID inválido",
+        description: "O ID do Telegram deve conter entre 6 e 15 números",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Atualizar estado para mostrar que está verificando
+    updateTaskState("telegram-join", { verifying: true, error: null })
+
+    try {
+      // Verificação em tempo real com a API
+      const response = await verifyTelegramJoin(telegramId, "+n3W_3F75YKhiZGRh", walletAddress)
+
+      if (response.success) {
+        updateTaskState("telegram-join", { completed: true, verifying: false })
+        toast({
+          title: "Participação verificada!",
+          description: response.message,
+          className: "bg-green-950 border-green-800 text-green-100",
+        })
+      } else {
+        updateTaskState("telegram-join", { verifying: false, error: response.message })
+        toast({
+          title: "Erro na verificação",
+          description: response.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao verificar participação no Telegram:", error)
+      updateTaskState("telegram-join", {
+        verifying: false,
+        error: "Erro ao verificar. Tente novamente.",
+      })
+      toast({
+        title: "Erro na verificação",
+        description: "Ocorreu um erro ao verificar. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleStartVerification = async () => {
+    // Verificar se todas as tarefas foram concluídas
+    if (!tasks.every((task) => task.completed)) {
+      toast({
+        title: "Tarefas incompletas",
+        description: "Complete todas as tarefas antes de iniciar a verificação",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsVerifying(true)
+    setVerificationProgress(0)
+    setVerificationFailed(false)
+    setFailedTaskId(null)
+
+    // Limpar qualquer intervalo anterior
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current)
+    }
+
+    try {
+      // Iniciar verificação em tempo real de todas as tarefas
+      const response = await verifyAllTasks(tasks, walletAddress)
+
+      if (response.success) {
+        // Simular progresso para uma melhor experiência do usuário
+        const totalVerificationTime = 15 // segundos
+        const updateInterval = 300 // milissegundos
+        const incrementPerUpdate = (100 * updateInterval) / (totalVerificationTime * 1000)
+
+        progressIntervalRef.current = setInterval(() => {
+          setVerificationProgress((prev) => {
+            const newProgress = Math.min(prev + incrementPerUpdate, 100)
+
+            // Verificação completa
+            if (newProgress >= 100) {
+              if (progressIntervalRef.current) {
+                clearInterval(progressIntervalRef.current)
+                progressIntervalRef.current = null
+              }
+              setIsVerifying(false)
+              setIsVerified(true)
+              setClaimEnabled(true)
+
+              // Notificar que todas as tarefas foram concluídas
+              setTimeout(() => {
+                toast({
+                  title: "Verificação concluída!",
+                  description:
+                    "Todas as tarefas foram verificadas com sucesso. Você pode reivindicar seus tokens agora.",
+                  className: "bg-green-950 border-green-800 text-green-100",
+                })
+              }, 100)
+
+              return 100
+            }
+
+            return newProgress
+          })
+        }, updateInterval)
+      } else {
+        // Falha na verificação
+        setIsVerifying(false)
+        setVerificationFailed(true)
+        setFailedTaskId(response.taskId || null)
+
+        toast({
+          title: "Verificação falhou",
+          description: response.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao iniciar verificação:", error)
+      setIsVerifying(false)
+      setVerificationFailed(true)
+
+      toast({
+        title: "Erro na verificação",
+        description: "Ocorreu um erro ao verificar as tarefas. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleProcessPayment = async () => {
+    if (!isVerified) {
+      toast({
+        title: "Verificação necessária",
+        description: "Complete a verificação antes de reivindicar tokens",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Verificar si a carteira já reivindicou tokens
+    if (hasClaimedTokens(walletAddress)) {
+      toast({
+        title: "Reivindicação já realizada",
+        description: "Esta carteira já reivindicou tokens anteriormente.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsProcessingPayment(true)
+
+    try {
+      toast({
+        title: "Processando pagamento",
+        description: "Sua carteira será aberta para autorizar o pagamento de 0.000006 ETH",
+        className: "bg-blue-950 border-blue-800 text-blue-100",
+      })
+
+      // Verificar se o MetaMask está instalado
+      if (isMetaMaskInstalled()) {
+        try {
+          // Endereço do contrato para pagamento
+          const toAddress = "0x0Fcf41A546b2de64aBDc320703dDD657dF802Eb4"
+          const amountInEth = "0.000006"
+
+          // Enviar transação
+          const txHash = await sendTransaction(toAddress, amountInEth)
+          setTransactionHash(txHash)
+
+          console.log("Transação enviada:", txHash)
+
+          // Aguardar confirmação da transação
+          toast({
+            title: "Transação enviada",
+            description: "Aguardando confirmação da transação...",
+            className: "bg-blue-950 border-blue-800 text-blue-100",
+          })
+
+          // Verificar status da transação a cada 3 segundos
+          let attempts = 0
+
+          // Limpar qualquer intervalo anterior
+          if (checkIntervalRef.current) {
+            clearInterval(checkIntervalRef.current)
+          }
+
+          checkIntervalRef.current = setInterval(async () => {
+            try {
+              attempts++
+              const status = await checkTransactionStatus(txHash)
+              if (status) {
+                if (checkIntervalRef.current) {
+                  clearInterval(checkIntervalRef.current)
+                  checkIntervalRef.current = null
+                }
+
+                // Continuar com o processo após confirmação
+                // Registrar a reivindicação no sistema
+                recordClaim(walletAddress, tokenAmount, txHash, referredBy || undefined)
+
+                // Mostrar modal de sucesso e confetes
+                setShowSuccessModal(true)
+                setShowConfetti(true)
+
+                // Notificar administradores via WhatsApp
+                try {
+                  console.log("Enviando notificação para administradores...")
+
+                  // Construir URL com parâmetros de consulta para garantir que os dados sejam recebidos
+                  const params = new URLSearchParams()
+                  params.append("walletAddress", walletAddress)
+                  params.append("twitterUsername", twitterUsername || "")
+                  params.append("telegramId", telegramId || "")
+                  params.append("tokenAmount", tokenAmount.toString())
+                  params.append("transactionHash", txHash)
+                  if (referredBy) params.append("referredBy", referredBy)
+
+                  // Adicionar timestamp para evitar cache
+                  params.append("timestamp", new Date().toISOString())
+
+                  // Construir a URL completa para a notificação
+                  const notificationUrl = `/api/notify-claim?${params.toString()}`
+                  console.log("URL de notificação:", notificationUrl)
+
+                  // Fazer até 3 tentativas de envio da notificação
+                  let notificationSuccess = false
+                  attempts = 0
+
+                  while (!notificationSuccess && attempts < 3) {
+                    try {
+                      attempts++
+                      console.log(`Tentativa ${attempts} de enviar notificação...`)
+
+                      // Usar GET para garantir que os parâmetros sejam processados corretamente
+                      const notificationResponse = await fetch(notificationUrl, {
+                        method: "GET",
+                        headers: {
+                          "Cache-Control": "no-cache, no-store",
+                          Pragma: "no-cache",
+                        },
+                      })
+
+                      console.log("Status da resposta:", notificationResponse.status)
+                      const responseData = await notificationResponse.json()
+                      console.log("Resposta completa:", responseData)
+
+                      if (notificationResponse.ok && responseData.success) {
+                        notificationSuccess = true
+                        console.log("Notificação enviada com sucesso!")
+                      } else {
+                        console.warn(`Falha na tentativa ${attempts}:`, responseData)
+                        // Esperar antes da próxima tentativa
+                        if (attempts < 3) await new Promise((resolve) => setTimeout(resolve, 1000 * attempts))
+                      }
+                    } catch (attemptError) {
+                      console.error(`Erro na tentativa ${attempts}:`, attemptError)
+                      // Esperar antes da próxima tentativa
+                      if (attempts < 3) await new Promise((resolve) => setTimeout(resolve, 1000 * attempts))
+                    }
+                  }
+
+                  // Se todas as tentativas falharem, tentar o método alternativo
+                  if (!notificationSuccess) {
+                    console.log("Todas as tentativas falharam, tentando método alternativo...")
+
+                    // Tentar a API de fallback
+                    const fallbackUrl = `/api/send-whatsapp?walletAddress=${encodeURIComponent(walletAddress)}&message=${encodeURIComponent(
+                      `Nova reivindicação: ${walletAddress} (${tokenAmount} tokens) - TX: ${txHash}`,
+                    )}`
+
+                    const fallbackResponse = await fetch(fallbackUrl, {
+                      method: "GET",
+                      headers: {
+                        "Cache-Control": "no-cache, no-store",
+                        Pragma: "no-cache",
+                      },
+                    })
+
+                    console.log("Status da resposta de fallback:", fallbackResponse.status)
+                    const fallbackData = await fallbackResponse.json()
+                    console.log("Resposta de fallback completa:", fallbackData)
+
+                    // Última tentativa - API direta
+                    if (!fallbackResponse.ok) {
+                      const directUrl = `/api/direct-notify?walletAddress=${encodeURIComponent(walletAddress)}&message=${encodeURIComponent(
+                        `Nova reivindicação: ${walletAddress} (${tokenAmount} tokens) - TX: ${txHash}`,
+                      )}`
+
+                      await fetch(directUrl, { method: "GET" })
+                      console.log("Tentativa direta enviada")
+                    }
+                  }
+                } catch (notifyError) {
+                  console.error("Erro ao enviar notificação:", notifyError)
+                }
+              }
+
+              if (attempts >= 10) {
+                if (checkIntervalRef.current) {
+                  clearInterval(checkIntervalRef.current)
+                  checkIntervalRef.current = null
+                }
+                console.log("Número máximo de tentativas atingido")
+              }
+            } catch (error) {
+              console.error("Erro ao verificar status da transação:", error)
+              if (attempts >= 10 && checkIntervalRef.current) {
+                clearInterval(checkIntervalRef.current)
+                checkIntervalRef.current = null
+              }
+            }
+          }, 3000)
+        } catch (error) {
+          console.error("Erro na transação:", error)
+          toast({
+            title: "Erro na transação",
+            description: "Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.",
+            variant: "destructive",
+          })
+        }
+      } else {
+        // Fallback para navegadores sem MetaMask
+        toast({
+          title: "MetaMask não detectado",
+          description: "Por favor, instale a extensão MetaMask para continuar.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao processar pagamento:", error)
+      toast({
+        title: "Erro no pagamento",
+        description: "Ocorreu um erro ao processar o pagamento. Por favor, tente novamente.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsProcessingPayment(false)
+    }
+  }
+
+  useEffect(() => {
+    // Verificar se a carteira já reivindicou tokens ao montar o componente
+    if (walletAddress) {
+      const claimed = hasClaimedTokens(walletAddress)
+      hasClaimedRef.current = claimed
+      setHasClaimed(claimed)
+    }
+
+    // Efeito de limpeza
+    return () => {
+      // Limpar intervalos
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+        progressIntervalRef.current = null
+      }
+
+      // Limpar o intervalo de verificação de transação
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current)
+        checkIntervalRef.current = null
+      }
+
+      // Limpar controladores de aborto
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
+      }
+
+      // Limpar timeouts
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current)
+        toastTimeoutRef.current = null
+      }
+    }
+  }, [walletAddress])
+
+  const hashtags =
+    "#airdrop #Dogecoin #eth #ShibaInu #mainnet #pepecoin #web3 #crypto #arbitrum #OFFICIALTRUMP #memecoins #StreetDogCoin #TieBank #CryptoForACause #DogAdoption #BlockchainForGood #CryptoWithPurpose #SupportAnimalRescue #DogRescue #AniRes #AniResBank"
+
+  const copyToClipboard = (text: string, message: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Copiado!",
+          description: message,
+          className: "bg-green-950 border-green-800 text-green-100",
+        })
+      })
+      .catch((err) => {
+        console.error("Erro ao copiar: ", err)
+        toast({
+          title: "Erro ao copiar",
+          description: "Não foi possível copiar o texto",
+          variant: "destructive",
+        })
+      })
+  }
+
+  // Verificar se a carteira está conectada
+  useEffect(() => {
+    if (walletAddress) {
+      setInternalIsConnected(true)
+    } else {
+      setInternalIsConnected(false)
+    }
+  }, [walletAddress])
+
+  if (!internalIsConnected) {
     return (
-      <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
-        <CardHeader className="border-b border-purple-900/20 bg-black/50">
-          <CardTitle className="text-xl text-purple-400">Reivindicação Existente</CardTitle>
-          <CardDescription className="text-gray-400">
-            Este endereço de carteira já fez uma reivindicação
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-4 flex items-start">
-            <CheckCircle2 className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
-            <div>
-              <h4 className="font-medium text-blue-400">Reivindicação já processada</h4>
-              <p className="text-sm text-gray-300 mt-1">
-                Seu endereço de carteira já está registrado para receber tokens $ANIRES. Não é necessário fazer uma nova
-                reivindicação.
+      <div className="space-y-6">
+        <Card className="border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center text-center space-y-4">
+              <Wallet className="h-12 w-12 text-purple-400" />
+              <h2 className="text-xl font-semibold text-white">Conecte sua carteira</h2>
+              <p className="text-gray-400">
+                Para participar do airdrop e reivindicar seus tokens, você precisa conectar sua carteira primeiro.
               </p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
-    <Card className="border-purple-800/30 bg-black/30 backdrop-blur-sm shadow-xl overflow-hidden">
-      <CardHeader className="border-b border-purple-900/20 bg-black/50">
-        <CardTitle className="text-xl text-purple-400">Tarefas de Participação</CardTitle>
-        <CardDescription className="text-gray-400">
-          Siga estas etapas para participar do airdrop AniRes e ter a chance de receber tokens gratuitos.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-6">
-        <div className="space-y-6">
-          {/* Lista de tarefas */}
-          <div className="space-y-4">
-            {tasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={{ ...task, hashtags: hashtags }}
-                handleInputChange={handleInputChange}
-                handleVerifyTask={handleVerifyTask}
-                copyHashtags={copyHashtags}
-              />
-            ))}
+    <div className="space-y-6">
+      {showConfetti && <ConfettiEffect duration={8000} />}
+
+      {showSuccessModal && (
+        <SuccessModal
+          isOpen={showSuccessModal}
+          onClose={() => setShowSuccessModal(false)}
+          walletAddress={walletAddress}
+          tokenAmount={tokenAmount}
+        />
+      )}
+
+      <div className="text-left mb-2">
+        <h2 className="text-xl text-purple-400 font-semibold">Tarefas de Participação</h2>
+        <p className="text-gray-400 text-sm">
+          Siga estas etapas para participar do airdrop Street Dog Coin e ter a chance de receber tokens gratuitos.
+        </p>
+      </div>
+
+      {/* Task 1: Follow on Twitter */}
+      <Card
+        className={`border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden ${tasks[0].locked ? "opacity-70" : ""}`}
+      >
+        <CardHeader className="border-b border-purple-900/20 bg-[#0a0a14] py-3 px-4">
+          <div className="flex items-center">
+            <Twitter className="h-5 w-5 text-blue-400" />
+            <CardTitle className="text-base text-purple-400 ml-2">Seguir no Twitter</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p className="text-sm text-gray-300 mb-3">Siga @aniresbank</p>
+
+          <div className="mb-3">
+            <Link
+              href="https://x.com/aniresbank"
+              target="_blank"
+              className="text-blue-400 hover:underline text-sm flex items-center"
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              Seguir @aniresbank
+            </Link>
           </div>
 
-          {/* Seção de verificação */}
-          <div className="border border-purple-800/30 bg-purple-900/10 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-purple-300 mb-2">Verificação de Tarefas</h3>
-            <p className="text-sm text-gray-300 mb-4">
-              Após completar todas as tarefas, inicie a verificação para habilitar a reivindicação do airdrop. Nosso
-              sistema verificará em tempo real se você completou todas as tarefas necessárias. Este processo leva
-              aproximadamente 100 segundos.
-            </p>
+          <div className="flex flex-col space-y-3">
+            <div>
+              <label htmlFor="twitter-username" className="text-sm text-gray-400 mb-1 block">
+                Digite seu nome de usuário do Twitter
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  id="twitter-username"
+                  placeholder="@seuusuario"
+                  value={twitterUsername}
+                  onChange={(e) => setTwitterUsername(e.target.value)}
+                  className="bg-[#13131f] border-purple-800/30 text-white"
+                  disabled={tasks[0].completed || tasks[0].locked || tasks[0].verifying}
+                />
+                {tasks[0].completed ? (
+                  <div className="flex items-center text-green-400 text-sm px-3 border border-green-800/30 rounded-md bg-green-900/20">
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    <span>Verificado</span>
+                  </div>
+                ) : tasks[0].verifying ? (
+                  <div className="flex items-center text-yellow-400 text-sm px-3 border border-yellow-800/30 rounded-md bg-yellow-900/20">
+                    <Clock className="h-4 w-4 mr-1 animate-spin" />
+                    <span>Verificando...</span>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={handleTwitterFollowVerification}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    disabled={tasks[0].locked}
+                  >
+                    Verificar
+                  </Button>
+                )}
+              </div>
+              {tasks[0].error && <p className="text-red-400 text-xs mt-1">{tasks[0].error}</p>}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-            {!allTasksCompleted && (
-              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <AlertCircle className="h-5 w-5 text-yellow-400 mr-3 mt-0.5" />
+      {/* Task 2: Retweet with hashtags */}
+      <Card
+        className={`border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden ${tasks[1].locked ? "opacity-70" : ""}`}
+      >
+        <CardHeader className="border-b border-purple-900/20 bg-[#0a0a14] py-3 px-4">
+          <div className="flex items-center">
+            <Twitter className="h-5 w-5 text-blue-400" />
+            <CardTitle className="text-base text-purple-400 ml-2">Retweet com Hashtags</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p className="text-sm text-gray-300 mb-3">Faça um quote retweet do tweet do AniRes com as hashtags</p>
+
+          <div className="mb-3 p-3 bg-[#13131f] rounded-md border border-purple-800/30">
+            <p className="text-xs text-gray-300 mb-2 break-words">{hashtags}</p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-purple-800/30 text-purple-400 hover:bg-purple-900/20"
+              onClick={() => copyToClipboard(hashtags, "Hashtags copiadas para a área de transferência")}
+              disabled={tasks[1].locked}
+            >
+              <Copy className="h-3 w-3 mr-1" />
+              Copiar Hashtags
+            </Button>
+          </div>
+
+          <div className="mb-3">
+            <Link
+              href="https://x.com/aniresbank/status/1902540931510775987"
+              target="_blank"
+              className="text-blue-400 hover:underline text-sm flex items-center"
+              onClick={(e) => {
+                if (tasks[1].locked) {
+                  e.preventDefault()
+                  toast({
+                    title: "Tarefa bloqueada",
+                    description: "Complete a tarefa anterior primeiro",
+                    variant: "destructive",
+                  })
+                }
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              Ver tweet para retweet
+            </Link>
+          </div>
+
+          <div className="flex flex-col space-y-3">
+            <div>
+              <label htmlFor="retweet-link" className="text-sm text-gray-400 mb-1 block">
+                Cole o link do seu retweet
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  id="retweet-link"
+                  placeholder="https://x.com/seu-usuario/status/123456789"
+                  value={retweetLink}
+                  onChange={(e) => setRetweetLink(e.target.value)}
+                  className="bg-[#13131f] border-purple-800/30 text-white"
+                  disabled={tasks[1].completed || tasks[1].locked || tasks[1].verifying}
+                />
+                {tasks[1].completed ? (
+                  <div className="flex items-center text-green-400 text-sm px-3 border border-green-800/30 rounded-md bg-green-900/20">
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    <span>Verificado</span>
+                  </div>
+                ) : tasks[1].verifying ? (
+                  <div className="flex items-center text-yellow-400 text-sm px-3 border border-yellow-800/30 rounded-md bg-yellow-900/20">
+                    <Clock className="h-4 w-4 mr-1 animate-spin" />
+                    <span>Verificando...</span>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={handleTwitterRetweetVerification}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    disabled={tasks[1].locked}
+                  >
+                    Verificar
+                  </Button>
+                )}
+              </div>
+              {tasks[1].error && <p className="text-red-400 text-xs mt-1">{tasks[1].error}</p>}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Task 3: Like on Twitter */}
+      <Card
+        className={`border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden ${tasks[2].locked ? "opacity-70" : ""}`}
+      >
+        <CardHeader className="border-b border-purple-900/20 bg-[#0a0a14] py-3 px-4">
+          <div className="flex items-center">
+            <Heart className="h-5 w-5 text-red-400" />
+            <CardTitle className="text-base text-purple-400 ml-2">Curtir no Twitter</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p className="text-sm text-gray-300 mb-3">Curta o tweet do AniRes</p>
+
+          <div className="mb-3">
+            <Link
+              href="https://x.com/intent/like?tweet_id=1902540931510775987"
+              target="_blank"
+              className="text-blue-400 hover:underline text-sm flex items-center"
+              onClick={(e) => {
+                if (tasks[2].locked) {
+                  e.preventDefault()
+                  toast({
+                    title: "Tarefa bloqueada",
+                    description: "Complete a tarefa anterior primeiro",
+                    variant: "destructive",
+                  })
+                }
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              Curtir tweet
+            </Link>
+          </div>
+
+          <div className="flex justify-end">
+            {tasks[2].completed ? (
+              <div className="flex items-center text-green-400 text-sm px-3 border border-green-800/30 rounded-md bg-green-900/20">
+                <CheckCircle className="h-4 w-4 mr-1" />
+                <span>Verificado</span>
+              </div>
+            ) : tasks[2].verifying ? (
+              <div className="flex items-center text-yellow-400 text-sm px-3 border border-yellow-800/30 rounded-md bg-yellow-900/20">
+                <Clock className="h-4 w-4 mr-1 animate-spin" />
+                <span>Verificando...</span>
+              </div>
+            ) : (
+              <Button
+                onClick={handleTwitterLikeVerification}
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+                disabled={tasks[2].locked}
+              >
+                Verificar Curtida
+              </Button>
+            )}
+          </div>
+          {tasks[2].error && <p className="text-red-400 text-xs mt-1">{tasks[2].error}</p>}
+        </CardContent>
+      </Card>
+
+      {/* Task 4: Join Telegram */}
+      <Card
+        className={`border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden ${tasks[3].locked ? "opacity-70" : ""}`}
+      >
+        <CardHeader className="border-b border-purple-900/20 bg-[#0a0a14] py-3 px-4">
+          <div className="flex items-center">
+            <Send className="h-5 w-5 text-blue-400" />
+            <CardTitle className="text-base text-purple-400 ml-2">Entrar no Grupo do Telegram</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p className="text-sm text-gray-300 mb-3">Entre no grupo do Telegram do AniRes e obtenha seu ID</p>
+
+          <div className="mb-3">
+            <Link
+              href="https://t.me/+QjlsDJcarak3YTQ5"
+              target="_blank"
+              className="text-blue-400 hover:underline text-sm flex items-center mb-2"
+              onClick={(e) => {
+                if (tasks[3].locked) {
+                  e.preventDefault()
+                  toast({
+                    title: "Tarefa bloqueada",
+                    description: "Complete a tarefa anterior primeiro",
+                    variant: "destructive",
+                  })
+                }
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              Entrar no grupo do Telegram
+            </Link>
+
+            <Link
+              href="https://t.me/userinfobot"
+              target="_blank"
+              className="text-blue-400 hover:underline text-sm flex items-center"
+              onClick={(e) => {
+                if (tasks[3].locked) {
+                  e.preventDefault()
+                  toast({
+                    title: "Tarefa bloqueada",
+                    description: "Complete a tarefa anterior primeiro",
+                    variant: "destructive",
+                  })
+                }
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              Obtenha seu ID de usuário do Telegram
+            </Link>
+          </div>
+
+          <div className="flex flex-col space-y-3">
+            <div>
+              <label htmlFor="telegram-id" className="text-sm text-gray-400 mb-1 block">
+                Digite seu ID do Telegram (ex: 6123567677)
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  id="telegram-id"
+                  placeholder="6123567677"
+                  value={telegramId}
+                  onChange={(e) => setTelegramId(e.target.value)}
+                  className="bg-[#13131f] border-purple-800/30 text-white"
+                  disabled={tasks[3].completed || tasks[3].locked || tasks[3].verifying}
+                />
+                {tasks[3].completed ? (
+                  <div className="flex items-center text-green-400 text-sm px-3 border border-green-800/30 rounded-md bg-green-900/20">
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    <span>Verificado</span>
+                  </div>
+                ) : tasks[3].verifying ? (
+                  <div className="flex items-center text-yellow-400 text-sm px-3 border border-yellow-800/30 rounded-md bg-yellow-900/20">
+                    <Clock className="h-4 w-4 mr-1 animate-spin" />
+                    <span>Verificando...</span>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={handleTelegramJoinVerification}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    disabled={tasks[3].locked}
+                  >
+                    Verificar
+                  </Button>
+                )}
+              </div>
+              {tasks[3].error && <p className="text-red-400 text-xs mt-1">{tasks[3].error}</p>}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Verification Section */}
+      <div className="text-left mt-8 mb-2">
+        <h2 className="text-xl text-purple-400 font-semibold">Verificação de Tarefas</h2>
+        <p className="text-gray-400 text-sm">
+          Após completar todas as tarefas, inicie a verificação para habilitar a reivindicação do airdrop. Nosso sistema
+          verificará em tempo real se você completou todas as tarefas necessárias. Este processo leva aproximadamente 30
+          segundos.
+        </p>
+      </div>
+
+      <Card className="border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden">
+        <CardContent className="p-4">
+          {isVerifying && (
+            <div className="mb-4">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-400">Verificando tarefas...</span>
+                <span className="text-blue-400">{Math.round(verificationProgress)}%</span>
+              </div>
+              <Progress value={verificationProgress} className="h-2 bg-blue-950" />
+              <p className="text-xs text-gray-500 mt-1">
+                Por favor, aguarde enquanto verificamos suas tarefas. Isso pode levar até 30 segundos.
+              </p>
+            </div>
+          )}
+
+          {verificationFailed && failedTaskId && (
+            <div className="mb-4 p-3 bg-red-900/20 border border-red-800/30 rounded-md">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-red-400 mr-2 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-yellow-400">Tarefas Incompletas</h4>
+                  <h3 className="text-red-400 font-medium">Verificação falhou</h3>
                   <p className="text-sm text-gray-300 mt-1">
-                    Complete todas as tarefas antes de iniciar a verificação.
+                    Detectamos um problema com a tarefa:{" "}
+                    {failedTaskId === "twitter-follow"
+                      ? "Seguir no Twitter"
+                      : failedTaskId === "twitter-retweet"
+                        ? "Retweet com Hashtags"
+                        : failedTaskId === "twitter-like"
+                          ? "Curtir no Twitter"
+                          : "Entrar no Grupo do Telegram"}
+                  </p>
+                  <p className="text-sm text-gray-300 mt-1">
+                    Por favor, verifique se você completou corretamente esta tarefa e tente novamente.
                   </p>
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {verificationStatus === "verifying" && (
-              <div className="mb-4">
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm text-gray-400">Progresso da verificação</span>
-                  <span className="text-sm text-purple-300">{verificationProgress}%</span>
-                </div>
-                <Progress
-                  value={verificationProgress}
-                  className="h-2 bg-purple-900/20"
-                  indicatorClassName="bg-purple-500"
-                />
-              </div>
-            )}
-
-            {verificationStatus === "completed" ? (
-              <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <CheckCircle2 className="h-5 w-5 text-green-400 mr-3 mt-0.5" />
+          {isVerified && (
+            <div className="mb-4 p-3 bg-green-900/20 border border-green-800/30 rounded-md">
+              <div className="flex items-start">
+                <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-green-400">Verificação Concluída</h4>
+                  <h3 className="text-green-400 font-medium">Verificação Concluída</h3>
                   <p className="text-sm text-gray-300 mt-1">
                     Todas as tarefas foram verificadas com sucesso! Você pode reivindicar seus tokens agora.
                   </p>
                 </div>
               </div>
-            ) : (
-              <Button
-                onClick={handleStartVerification}
-                disabled={!allTasksCompleted || verificationStatus === "verifying"}
-                className="w-full bg-purple-600 hover:bg-purple-700"
-              >
-                {verificationStatus === "verifying" ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Verificando...
-                  </>
-                ) : (
-                  "Iniciar Verificação"
-                )}
-              </Button>
-            )}
+            </div>
+          )}
+
+          <div className="flex flex-col items-center py-2">
+            <Button
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              disabled={!tasks.every((task) => task.completed) || isVerifying || isVerified}
+              onClick={handleStartVerification}
+            >
+              {isVerifying ? (
+                <div className="flex items-center">
+                  <div className="h-4 w-4 border-2 border-t-white border-b-transparent border-l-transparent border-r-transparent rounded-full animate-spin mr-2"></div>
+                  Verificando Tarefas...
+                </div>
+              ) : isVerified ? (
+                <div className="flex items-center">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Verificação Concluída
+                </div>
+              ) : (
+                "Iniciar Verificação"
+              )}
+            </Button>
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Seção de reivindicação */}
-          <div className="border border-purple-800/30 bg-purple-900/10 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-purple-300 mb-2">Reivindicar Tokens</h3>
-            <p className="text-sm text-gray-300 mb-4">
-              Reivindique seus tokens $ANIRES do airdrop do AniRes. Para completar a reivindicação, é necessário
-              pagar uma taxa de {FEE_AMOUNT} ETH (aproximadamente $0.04 USD).
-            </p>
+      {/* Claim Tokens Section */}
+      <div className="text-left mt-8 mb-2">
+        <h2 className="text-xl text-purple-400 font-semibold">Reivindicar Tokens</h2>
+        <p className="text-gray-400 text-sm">
+          Reivindique seus tokens $ANIRES do airdrop do AniRes. Para completar a reivindicação, é necessário pagar uma
+          taxa de 0.000006 ETH (aproximadamente $0.02 USD).
+          {referredBy && (
+            <span className="text-green-400"> Você foi indicado e receberá 10% de bônus: {tokenAmount} tokens!</span>
+          )}
+        </p>
+      </div>
 
-            {verificationStatus !== "completed" && (
-              <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <AlertCircle className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
+      <Card className="border-purple-800/30 bg-[#0e0e1a] shadow-xl overflow-hidden">
+        <CardContent className="p-4">
+          {!isVerified ? (
+            <div className="p-3 bg-yellow-900/20 border border-yellow-800/30 rounded-md mb-4">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-yellow-400 mr-2 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-blue-400">Verificação Necessária</h4>
+                  <h3 className="text-yellow-400 font-medium">Verificação Necessária</h3>
                   <p className="text-sm text-gray-300 mt-1">
                     Complete todas as tarefas obrigatórias e a verificação para reivindicar tokens.
                   </p>
                 </div>
               </div>
-            )}
+            </div>
+          ) : (
+            <>
+              <div className="mb-4">
+                <h3 className="text-white font-medium mb-2">Informações da Taxa</h3>
+                <p className="text-sm text-gray-300 mb-3">
+                  Ao clicar em "Reivindicar Tokens", sua carteira será aberta para autorizar o pagamento de 0.000006 ETH
+                  (aproximadamente $0.02 USD) para completar a reivindicação.
+                </p>
 
-            {verificationStatus === "completed" && (
-              <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <Wallet className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-blue-400">Informações da Taxa</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Ao clicar em "Reivindicar Tokens", sua carteira será aberta para autorizar o pagamento de{" "}
-                    {FEE_AMOUNT} ETH (aproximadamente $0.04 USD) para completar a reivindicação.
-                  </p>
-                  <p className="text-sm text-gray-300 mt-1">Endereço para pagamento:</p>
-                  <div className="mt-1 text-xs text-gray-400 flex items-center">
-                    <span className="font-mono mr-2">{RECIPIENT_ADDRESS}</span>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(RECIPIENT_ADDRESS)
-                        toast({
-                          title: "Endereço copiado",
-                          description: "Endereço de pagamento copiado para a área de transferência",
-                          duration: 3000,
-                        })
-                      }}
-                      className="text-purple-400 hover:text-purple-300"
+                <div className="p-3 bg-[#13131f] rounded-md border border-purple-800/30 mb-3">
+                  <p className="text-sm text-gray-400 mb-1">Endereço para pagamento:</p>
+                  <div className="flex items-center justify-between">
+                    <code className="text-xs text-purple-300 font-mono">
+                      0x0Fcf41A546b2de64aBDc320703dDD657dF802Eb4
+                    </code>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-purple-800/30 text-purple-400 hover:bg-purple-900/20"
+                      onClick={() =>
+                        copyToClipboard(
+                          "0x0Fcf41A546b2de64aBDc320703dDD657dF802Eb4",
+                          "Endereço copiado para a área de transferência",
+                        )
+                      }
                     >
-                      <Copy className="h-3 w-3" />
-                    </button>
+                      <Copy className="h-3 w-3 mr-1" />
+                      Copiar
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-blue-900/20 border border-blue-800/30 rounded-md mb-3">
+                  <div className="flex items-start">
+                    <Shield className="h-5 w-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-blue-400 font-medium">Segurança</h3>
+                      <p className="text-sm text-gray-300 mt-1">
+                        Todas as transações são seguras e verificadas. Você pode verificar o contrato do token antes de
+                        prosseguir.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
 
-            {claimStatus === "paying" && (
-              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <Loader2 className="h-5 w-5 text-yellow-400 mr-3 mt-0.5 animate-spin" />
-                <div>
-                  <h4 className="font-medium text-yellow-400">Aguardando Autorização</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Por favor, verifique sua extensão de carteira e autorize o pagamento da taxa. Não feche esta janela.
-                  </p>
-                </div>
-              </div>
-            )}
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                disabled={isProcessingPayment}
+                onClick={handleProcessPayment}
+              >
+                {isProcessingPayment ? (
+                  <div className="flex items-center">
+                    <div className="h-4 w-4 border-2 border-t-white border-b-transparent border-l-transparent border-r-transparent rounded-full animate-spin mr-2"></div>
+                    Processando...
+                  </div>
+                ) : (
+                  "Reivindicar Tokens"
+                )}
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
-            {claimStatus === "confirming" && (
-              <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <Loader2 className="h-5 w-5 text-yellow-400 mr-3 mt-0.5 animate-spin" />
-                <div>
-                  <h4 className="font-medium text-yellow-400">Confirmando Transação</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Sua transação foi enviada e está sendo confirmada na blockchain. Este processo pode levar alguns
-                    minutos dependendo do congestionamento da rede.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {claimStatus === "completed" && (
-              <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <CheckCircle2 className="h-5 w-5 text-green-400 mr-3 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-green-400">Tokens Reivindicados!</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Parabéns! Sua taxa foi paga com sucesso e seus tokens $ANIRES foram reivindicados. Eles serão
-                    enviados para sua carteira em breve.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {claimStatus === "failed" && (
-              <div className="bg-red-900/20 border border-red-700/30 rounded-lg p-3 mb-4 flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-400 mr-3 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-red-400">Falha na Transação</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Ocorreu um erro ao processar sua transação. Verifique se você tem saldo suficiente para pagar a taxa
-                    de reivindicação e tente novamente.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <Button
-              onClick={handleClaimTokens}
-              disabled={
-                verificationStatus !== "completed" ||
-                claimStatus === "paying" ||
-                claimStatus === "confirming" ||
-                claimStatus === "completed"
-              }
-              className="w-full bg-green-600 hover:bg-green-700"
-            >
-              {claimStatus === "paying" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Aguardando autorização na carteira...
-                </>
-              ) : claimStatus === "confirming" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Confirmando transação...
-                </>
-              ) : claimStatus === "completed" ? (
-                <>
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Tokens Reivindicados
-                </>
-              ) : (
-                <>
-                  <Wallet className="mr-2 h-4 w-4" />
-                  Reivindicar Tokens
-                </>
-              )}
-            </Button>
-
-            {isExploding && (
-              <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-                <ConfettiExplosion force={0.8} duration={3000} particleCount={250} width={1600} />
-              </div>
-            )}
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="border-t border-purple-900/20 flex flex-col items-start p-4 bg-black/50">
-        <p className="text-sm text-gray-400">
-          Todas as informações serão armazenadas separadamente para cada carteira participante.
-        </p>
-      </CardFooter>
-    </Card>
+      <div className="text-center text-xs text-gray-500 mt-4">
+        Todas as verificações serão processadas automaticamente para cada carteira participante.
+      </div>
+    </div>
   )
 }
 

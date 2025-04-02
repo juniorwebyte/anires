@@ -37,16 +37,16 @@ export default function TermosDeServicoPage() {
             <div className="prose prose-invert max-w-none">
               <h2 className="text-2xl font-bold text-blue-400">1. Aceitação dos Termos</h2>
               <p>
-                Ao acessar e usar o site e os serviços do AniRes, você concorda em cumprir e ficar vinculado a
-                estes Termos de Serviço. Se você não concordar com qualquer parte destes termos, não poderá acessar o
-                site ou usar nossos serviços.
+                Ao acessar e usar o site e os serviços do AniRes, você concorda em cumprir e ficar vinculado a estes
+                Termos de Serviço. Se você não concordar com qualquer parte destes termos, não poderá acessar o site ou
+                usar nossos serviços.
               </p>
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">2. Descrição dos Serviços</h2>
               <p>
-                O AniRes oferece uma plataforma baseada em blockchain que permite aos usuários adquirir,
-                transferir e utilizar tokens $ANIRES, participar de staking, governança e outras funcionalidades
-                relacionadas ao ecossistema do AniRes.
+                O AniRes Coin oferece uma plataforma baseada em blockchain que permite aos usuários adquirir, transferir
+                e utilizar tokens $ANIRES, participar de staking, governança e outras funcionalidades relacionadas ao
+                ecossistema do AniRes.
               </p>
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">3. Elegibilidade</h2>
@@ -100,9 +100,8 @@ export default function TermosDeServicoPage() {
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">7. Propriedade Intelectual</h2>
               <p>
-                Todo o conteúdo, design, gráficos, interfaces e código do site são de propriedade do AniRes e
-                estão protegidos por leis de direitos autorais, marcas registradas e outras leis de propriedade
-                intelectual.
+                Todo o conteúdo, design, gráficos, interfaces e código do site são de propriedade do AniRes Coin e estão
+                protegidos por leis de direitos autorais, marcas registradas e outras leis de propriedade intelectual.
               </p>
               <p>
                 Você não pode reproduzir, modificar, distribuir ou criar trabalhos derivados baseados em nosso conteúdo
@@ -111,10 +110,9 @@ export default function TermosDeServicoPage() {
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">8. Limitação de Responsabilidade</h2>
               <p>
-                Em nenhuma circunstância o AniRes, seus diretores, funcionários, parceiros ou agentes serão
-                responsáveis por quaisquer danos indiretos, incidentais, especiais, consequenciais ou punitivos,
-                incluindo, sem limitação, perda de lucros, dados, uso, boa vontade ou outras perdas intangíveis,
-                resultantes de:
+                Em nenhuma circunstância o AniRes, seus diretores, funcionários, parceiros ou agentes serão responsáveis
+                por quaisquer danos indiretos, incidentais, especiais, consequenciais ou punitivos, incluindo, sem
+                limitação, perda de lucros, dados, uso, boa vontade ou outras perdas intangíveis, resultantes de:
               </p>
               <ul>
                 <li>Seu acesso ou uso ou incapacidade de acessar ou usar os serviços;</li>
@@ -125,11 +123,11 @@ export default function TermosDeServicoPage() {
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">9. Indenização</h2>
               <p>
-                Você concorda em indenizar, defender e isentar o AniRes e seus diretores, funcionários,
-                parceiros e agentes de e contra quaisquer reclamações, responsabilidades, danos, perdas e despesas,
-                incluindo, sem limitação, honorários advocatícios razoáveis, decorrentes de ou de qualquer forma
-                relacionados com seu acesso ou uso dos serviços, sua violação destes Termos ou sua violação de quaisquer
-                direitos de terceiros.
+                Você concorda em indenizar, defender e isentar o AniRes e seus diretores, funcionários, parceiros e
+                agentes de e contra quaisquer reclamações, responsabilidades, danos, perdas e despesas, incluindo, sem
+                limitação, honorários advocatícios razoáveis, decorrentes de ou de qualquer forma relacionados com seu
+                acesso ou uso dos serviços, sua violação destes Termos ou sua violação de quaisquer direitos de
+                terceiros.
               </p>
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">10. Modificações dos Termos</h2>
@@ -147,8 +145,7 @@ export default function TermosDeServicoPage() {
 
               <h2 className="text-2xl font-bold text-blue-400 mt-8">12. Contato</h2>
               <p>
-                Se você tiver alguma dúvida sobre estes Termos, entre em contato conosco pelo e-mail:
-                legal@anires.org
+                Se você tiver alguma dúvida sobre estes Termos, entre em contato conosco pelo e-mail: legal@anires.org
               </p>
             </div>
           </motion.div>
