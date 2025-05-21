@@ -1,5 +1,5 @@
-#{
-  "#headers": [
+{
+  "headers": [
     {
       "source": "/(.*)",
       "headers": [
@@ -8,7 +8,7 @@
           "value": "nosniff"
         },
         {
-          "#key": "X-Frame-Options",
+          "key": "X-Frame-Options",
           "value": "DENY"
         },
         {
